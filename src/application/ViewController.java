@@ -43,6 +43,7 @@ public class ViewController extends Application{
 			//Scene loginScreen = new LoginScreen().screen;
 			screens.put("Login", new LoginScreen());
 			screens.put("Home", new HomeScreen());
+			screens.put("Seller", new SellerScreen());
 			//stage.setScene(loginScreen);
 			
 			//apply styles to all screens
@@ -83,6 +84,14 @@ public class ViewController extends Application{
 	//if user is signed in as general user and in home screen, moves to selling screen
 	public static void goSelling() {
 		System.out.println("going to sell screen");
+		
+		//CODE: add check for user authentication
+		if (screens.get("Seller") != null) {
+			stage.setScene(screens.get("Seller").screen);
+		}
+		else {
+			System.out.println("No sell screen");
+		}
 	}
 	
 	//if user is signed in as general user and in home screen, moves to profile screen
