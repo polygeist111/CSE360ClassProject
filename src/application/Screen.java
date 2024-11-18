@@ -113,24 +113,24 @@ public abstract class Screen {
 	}
 	
 	//returns button that will return regular user to home screen
-	protected Button createReturnHomeButton() {
+	protected Button createReturnHomeButton(String caller) {
 		System.out.println("Creating Return Home Button");
 		
 		Button homeBut = new Button("Return Home");
 		homeBut.setOnAction(event -> {
-			ViewController.goHome();
+			ViewController.goHome(caller);
 		});
 	
         return homeBut;
 	}
 	
 	//returns button that will return regular user from cart to buy screen
-	protected Button createReturnShoppingButton() {
+	protected Button createReturnShoppingButton(String caller) {
 		System.out.println("Creating Return Shopping Button");
 		
 		Button shopBut = new Button("Return to Shopping");
 		shopBut.setOnAction(event -> {
-			ViewController.goShopping();
+			ViewController.goShopping(caller);
 		});
 			
 		
@@ -139,12 +139,12 @@ public abstract class Screen {
 	}
 	
 	//returns button that will return any user to login page, signed out
-	protected Button createSignOutButton() {
+	protected Button createSignOutButton(String caller) {
 		System.out.println("Creating Sign Out Button");
 		
 		Button signoutBut = new Button("Sign Out");
 		signoutBut.setOnAction(event -> {
-			ViewController.signOut();
+			ViewController.signOut(caller);
 		});
 		
 		
@@ -152,7 +152,7 @@ public abstract class Screen {
 	}
 	
 	//takes in label name, file name, event name and will return vbox containing icon button and label
-	protected VBox createIconButton(String label, String fileName, String eventType) {
+	protected VBox createIconButton(String label, String fileName, String eventType, String caller) {
 		int iconDim = 120;
 		VBox box = new VBox(10);
 		box.setAlignment(Pos.CENTER);
@@ -167,13 +167,13 @@ public abstract class Screen {
 		boxButton.setOnAction(event -> {
 			switch (eventType) {
 				case "Buy":
-					ViewController.goShopping();
+					ViewController.goShopping(caller);
 					break;
 				case "Sell":
-					ViewController.goSelling();
+					ViewController.goSelling(caller);
 					break;
 				case "Profile":
-					ViewController.goProfile();
+					ViewController.goProfile(caller);
 					break;
 				default:
 					System.out.println("Not a recognized event type");

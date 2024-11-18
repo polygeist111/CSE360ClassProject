@@ -62,31 +62,41 @@ public class ViewController extends Application{
 	}
 	
 	//if user is signed in as general user, moves to home screen
-	public static void goHome() {
+	public static void goHome(String caller) {
 		System.out.println("going home");
-		
 		//CODE: add check for general user authentication
-		if (screens.get("Home") != null) {
+		if (clearScreen(caller) && screens.get("Home") != null) {
 			stage.setScene(screens.get("Home").screen);
+		} else {
+			System.out.println("No home screen");
 		}
 	}
 	
 	//if user is signed in as general user and in home screen or cart screen, moves to buying screen
-	public static void goShopping() {
+	public static void goShopping(String caller) {
 		System.out.println("going to buy screen");
+		if (clearScreen(caller) && screens.get("Buy") != null) {
+			stage.setScene(screens.get("Buy").screen);
+		} else {
+			System.out.println("No buy screen");
+		}
 	}
 	
 	//if user is signed in as general user and in buying screen, moves to cart screen
-	public static void goCart() {
+	public static void goCart(String caller) {
 		System.out.println("going to cart");
+		if (clearScreen(caller) && screens.get("Cart") != null) {
+			stage.setScene(screens.get("Cart").screen);
+		} else {
+			System.out.println("No cart screen");
+		}
 	}
 	
 	//if user is signed in as general user and in home screen, moves to selling screen
-	public static void goSelling() {
+	public static void goSelling(String caller) {
 		System.out.println("going to sell screen");
-		
 		//CODE: add check for user authentication
-		if (screens.get("Seller") != null) {
+		if (clearScreen(caller) && screens.get("Seller") != null) {
 			stage.setScene(screens.get("Seller").screen);
 		}
 		else {
@@ -95,18 +105,58 @@ public class ViewController extends Application{
 	}
 	
 	//if user is signed in as general user and in home screen, moves to profile screen
-	public static void goProfile() {
+	public static void goProfile(String caller) {
 		System.out.println("going to profile screen");
+		if (clearScreen(caller) && screens.get("Profile") != null) {
+			stage.setScene(screens.get("Profile").screen);
+		} else {
+			System.out.println("No profile screen");
+		}
 	}
 	
 	//if user is signed in at all, sign out and return them to login screen
-	public static void signOut() {
+	public static void signOut(String caller) {
 		System.out.println("signing out");
-		
 		//CODE: add check for user authentication
-		if (screens.get("Login") != null) {
+		if (clearScreen(caller) && screens.get("Login") != null) {
 			stage.setScene(screens.get("Login").screen);
+		} else {
+			System.out.println("No login screen");
 		}
+	}
+	
+	//clear + regenerate exited screen
+	public static boolean clearScreen(String caller) {
+		Screen newScreen = null;
+		switch (caller) {
+			case "Login":
+				newScreen = new LoginScreen();
+				break;
+			case "Home":
+				newScreen = new HomeScreen();
+				break;
+			case "Buy":
+				//newScreen = new BuyScreen();
+				break;
+			case "Cart":
+				//newScreen = new CartScreen();
+				break;
+			case "Sell":
+				newScreen = new SellerScreen();
+				break;
+			case "Profile":
+				//newScreen = new ProfileScreen();
+				break;
+			case "Admin":
+				//newScreen = new AdminScreen();
+				break;
+			default:
+				System.out.println("Caller " + caller + " not found");
+				return false;
+		}
+		newScreen.screen.getStylesheets().add("styles.css");
+		screens.put(caller, newScreen);
+		return true;
 	}
 
 	
