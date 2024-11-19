@@ -43,8 +43,8 @@ public class SellerScreen extends Screen {
 		
 		//create grid holding seller objects
 		GridPane sellerGrid = new GridPane();
-		sellerGrid.setVgap(5);
-		sellerGrid.setHgap(5);
+		sellerGrid.setVgap(15);
+		sellerGrid.setHgap(15);
 		
 		
 		//create "select category" dropdown menu
@@ -59,8 +59,8 @@ public class SellerScreen extends Screen {
 				"Natural Science",
 				"Other"
 				);
-		sellerGrid.add(categoryLabel,  0, 0);
-		sellerGrid.add(categoryBox,  0, 1);
+		sellerGrid.add(categoryLabel,  0, 2);
+		sellerGrid.add(categoryBox,  0, 3);
 		
 		
 		//create "book condition" dropdown menu
@@ -72,8 +72,8 @@ public class SellerScreen extends Screen {
 				"Moderately Used",
 				"Used Like New"
 				);
-		sellerGrid.add(conditionLabel,  0, 2);
-		sellerGrid.add(conditionBox,  0, 3);
+		sellerGrid.add(conditionLabel,  1, 2);
+		sellerGrid.add(conditionBox,  1, 3);
 		
 		
 		//create "original price" entry
@@ -85,48 +85,60 @@ public class SellerScreen extends Screen {
 				new NumberStringConverter(format)
 				);
 		originalField.setTextFormatter(textFormatter);
-		sellerGrid.add(originalLabel, 0, 4);
-		sellerGrid.add(originalField, 0, 5);
+		sellerGrid.add(originalLabel, 2, 0);
+		sellerGrid.add(originalField, 2, 1);
 		
 		//create book title label and entry
 		Label titleLabel = new Label("Title of Book");
 		titleLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
 		TextField titleField = new TextField();
-		sellerGrid.add(titleLabel, 0, 6);
-		sellerGrid.add(titleField, 0, 7);
+		sellerGrid.add(titleLabel, 0, 0);
+		sellerGrid.add(titleField, 0, 1);
 		
 		
 		//create book author label and entry
 		Label authorLabel = new Label("Book Author");		
 		authorLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
 		TextField authorField = new TextField();
-		sellerGrid.add(authorLabel, 0, 8);
-		sellerGrid.add(authorField, 0, 9);
+		sellerGrid.add(authorLabel, 1, 0);
+		sellerGrid.add(authorField, 1, 1);
 		
 		
 		//create published year label and entry
 		Label yearLabel = new Label("Published Year");		
 		yearLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
 		TextField yearField = new TextField();
-		sellerGrid.add(yearLabel, 0, 10);
-		sellerGrid.add(yearField, 0, 11);
+		sellerGrid.add(yearLabel, 3, 0);
+		sellerGrid.add(yearField, 3, 1);
 		
 		
-		//create calculate price label and button
+		//create calculated price label
+		Label priceLabel = new Label("Enter book details to see listing price");
+		sellerGrid.add(priceLabel, 2, 2, 2, 2);
+		sellerGrid.setHalignment(priceLabel, HPos.CENTER);
+		sellerGrid.setValignment(priceLabel, VPos.CENTER);
+
+		
+		HBox listingButtons = new HBox();
+		//create calculate price button
 		Button calculatePriceButton = new Button("Calculate Price");
-		Label priceLabel = new Label("");
-		sellerGrid.add(calculatePriceButton, 0, 12);
-		sellerGrid.add(priceLabel, 1, 12);
+		listingButtons.getChildren().add(createSpacer());
+		listingButtons.getChildren().add(calculatePriceButton);
+		//sellerGrid.add(calculatePriceButton, 0, 6, 2, 2);
+	
 		
-		
-		//create "list my book" label and button
+		//create "list my book" button
 		Button listBookButton = new Button("List My Book");
-		sellerGrid.add(listBookButton, 2, 12);
+		listingButtons.getChildren().add(createSpacer());
+		listingButtons.getChildren().add(listBookButton);
+		//sellerGrid.add(listBookButton, 2, 6, 2, 2);
+		listingButtons.getChildren().add(createSpacer());
+		sellerGrid.add(listingButtons, 0, 6, 4, 1);
 		
 		
 		//define calculate price behavior
 		calculatePriceButton.setOnAction(event -> {
-			priceLabel.setText("Price calculated!");
+			priceLabel.setText("Your price: $xx.xx");
 		});
 		
 
