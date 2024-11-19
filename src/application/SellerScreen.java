@@ -53,8 +53,7 @@ public class SellerScreen extends Screen {
 		ComboBox<String> categoryBox = new ComboBox<>();
 		categoryBox.getItems().addAll(
 				"Computer",
-				"English",
-				"Language",
+				"English Language",
 				"Math",
 				"Natural Science",
 				"Other"
@@ -68,9 +67,9 @@ public class SellerScreen extends Screen {
 		conditionLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
 		ComboBox<String> conditionBox = new ComboBox<>();
 		conditionBox.getItems().addAll(
-				"Heavily Used",
+				"Used Like New",
 				"Moderately Used",
-				"Used Like New"
+				"Heavily Used"
 				);
 		sellerGrid.add(conditionLabel,  1, 2);
 		sellerGrid.add(conditionBox,  1, 3);
@@ -124,14 +123,12 @@ public class SellerScreen extends Screen {
 		Button calculatePriceButton = new Button("Calculate Price");
 		listingButtons.getChildren().add(createSpacer());
 		listingButtons.getChildren().add(calculatePriceButton);
-		//sellerGrid.add(calculatePriceButton, 0, 6, 2, 2);
 	
 		
 		//create "list my book" button
 		Button listBookButton = new Button("List My Book");
 		listingButtons.getChildren().add(createSpacer());
 		listingButtons.getChildren().add(listBookButton);
-		//sellerGrid.add(listBookButton, 2, 6, 2, 2);
 		listingButtons.getChildren().add(createSpacer());
 		sellerGrid.add(listingButtons, 0, 6, 4, 1);
 		

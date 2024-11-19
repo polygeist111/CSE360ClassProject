@@ -26,25 +26,15 @@ public class ViewController extends Application{
 	@Override
 	public void start(Stage stage) {
 		//create canvas
-		try {/*
-			final Scene loginScreen = new Scene(new VBox());
-			//home page
-			final Scene userProfileScreen = new Scene(new VBox());
-			//buy page
-			//cart page
-			//sell page
-			//admin page
-			loginScreen.setRoot(new LoginBuilder(() -> primaryStage.setScene(userProfileScreen)).build());
-			loginScreen.setRoot(new ProfileBuilder(() -> primaryStage.setScene(userProfileScreen)).build());
-			primaryStage.setScene(loginScreen);
-			primaryStage.show();
-			*/
+		try {
 			ViewController.stage = stage;
-			//Scene loginScreen = new LoginScreen().screen;
 			screens.put("Login", new LoginScreen());
 			screens.put("Home", new HomeScreen());
-			screens.put("Seller", new SellerScreen());
-			//stage.setScene(loginScreen);
+			screens.put("Sell", new SellerScreen());
+			screens.put("Buy", new BuyerScreen());
+			//screens.put("Cart", new CartScreen());
+			//screens.put("Profile", new ProfileScreen());
+			//screens.put("Admin", new AdminScreen());
 			
 			//apply styles to all screens
 			for (Screen screen : screens.values()) {
@@ -96,8 +86,8 @@ public class ViewController extends Application{
 	public static void goSelling(String caller) {
 		System.out.println("going to sell screen");
 		//CODE: add check for user authentication
-		if (clearScreen(caller) && screens.get("Seller") != null) {
-			stage.setScene(screens.get("Seller").screen);
+		if (clearScreen(caller) && screens.get("Sell") != null) {
+			stage.setScene(screens.get("Sell").screen);
 		}
 		else {
 			System.out.println("No sell screen");
@@ -136,7 +126,7 @@ public class ViewController extends Application{
 				newScreen = new HomeScreen();
 				break;
 			case "Buy":
-				//newScreen = new BuyScreen();
+				newScreen = new BuyerScreen();
 				break;
 			case "Cart":
 				//newScreen = new CartScreen();
@@ -165,3 +155,9 @@ public class ViewController extends Application{
 	}
 
 }
+
+//Resources
+//firebase auth stuff https://stackoverflow.com/questions/37322747/using-mail-and-password-to-authenticate-via-the-rest-api-firebase/37419212#37419212
+//firebase pricing https://cloud.google.com/firestore/pricing
+//SQLite Setup Tutorial https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
+//SQLite Intro https://stephencollins.tech/posts/beginners-guide-to-sqlite

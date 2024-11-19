@@ -151,6 +151,19 @@ public abstract class Screen {
 		return signoutBut;
 	}
 	
+	//returns button that will take regular user from buy screen to cart
+	protected Button createViewCartButton(String caller) {
+		System.out.println("Creating View Cart Button");
+		
+		Button signoutBut = new Button("View Cart");
+		signoutBut.setOnAction(event -> {
+			ViewController.goCart(caller);
+		});
+		
+		
+		return signoutBut;
+	}
+	
 	//takes in label name, file name, event name and will return vbox containing icon button and label
 	protected VBox createIconButton(String label, String fileName, String eventType, String caller) {
 		int iconDim = 120;
