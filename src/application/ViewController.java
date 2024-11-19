@@ -27,6 +27,7 @@ public class ViewController extends Application{
 	public void start(Stage stage) {
 		//create canvas
 		try {
+			DBMediator.dbInit();
 			ViewController.stage = stage;
 			screens.put("Login", new LoginScreen());
 			screens.put("Home", new HomeScreen());
