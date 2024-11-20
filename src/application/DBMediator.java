@@ -63,7 +63,7 @@ public class DBMediator {
 	       //create executedListings table
 	       stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
 	       sql = "CREATE TABLE IF NOT EXISTS executedListings" +
-                   "(listingid INTEGER PRIMARY KEY     NOT NULL UNIQUE," +
+                   "(listingid INTEGER PRIMARY KEY     AUTOINCREMENT," +
                    " sellerid              INT     NOT NULL, " + 
                    " buyerid               INT     NOT NULL, " + 
                    " bookid                INT     NOT NULL, " + 
@@ -85,6 +85,59 @@ public class DBMediator {
 	
 	
 	//creates new user object
+	public static int createBook(String title, String author, int pubYear, String category, String condition, int value) {
+		c = null;
+	    try {
+	       Class.forName("org.sqlite.JDBC");
+	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+	       Statement stmt = c.createStatement();
+	       //check if user exists
+	       ResultSet rs = stmt.executeQuery("SELECT * FROM books WHERE "
+	       									+ "    title     = '" + title     + "'"
+	       									+ "AND author    = '" + author    + "'"
+	       									+ "AND pubyear   = '" + pubYear   + "'"
+	       									+ "AND category  = '" + category  + "'"
+	       									+ "AND condition = '" + condition + "'"
+	       									+ "AND value     = '" + value     + "'");
+	       boolean bookExists = false;
+	       while ( rs.next() ) {
+	          bookExists = true;
+	          break;
+	       }
+	       rs.close();
+	       //if yes, return without creating book
+	       if (bookExists) {
+	    	   System.out.println("Book already exists! No action needed");
+	    	   stmt.close();
+	    	   c.close();
+	    	   return 0;
+	       //if not, create book
+	       } else {
+	    	   //create book
+	    	   String sql = "INSERT INTO books (title, author, pubyear, category, condition, value)" +
+	    			   		"VALUES ('" + title + "', '" + author + "', " + pubYear + ", '" + category + "', '" + condition + "', " + value + ")";
+	    	   stmt.executeUpdate(sql);
+	    	   
+	    	   //get get bookID
+	    	   ResultSet rs2 = stmt.executeQuery("SELECT MAX(id) as bookid FROM books");
+	    	   int bookID = rs2.getInt("bookid");
+	    	  
+	    	   rs2.close();
+	    	   stmt.close();
+	    	   c.close();
+	    	   return bookID;
+	       }
+	    } catch ( Exception e ) {
+	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	       System.exit(0);
+	    }
+	    System.out.println("Improper escape from createBook");
+		return 0;
+	}
+	
+	
+	
+	//creates new book object
 	public static int createUser(String username, String password) {
 		c = null;
 	    try {
@@ -92,7 +145,7 @@ public class DBMediator {
 	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
 	       Statement stmt = c.createStatement();
 	       //check if user exists
-	       ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE username = '" + username + "';");
+	       ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username ='" + username + "'");
 	       boolean nameExists = false;
 	       while ( rs.next() ) {
 	          nameExists = true;
@@ -119,72 +172,80 @@ public class DBMediator {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
 	    }
-	    System.out.println("Opened database successfully");
+	    System.out.println("Improper escape from createUser");
 		return 0;
 	}
-	
-	
-	
-	//creates new book object
-	public static int createBook() {
-		c = null;
-	    try {
-	       Class.forName("org.sqlite.JDBC");
-	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
-	       Statement stmt = c.createStatement();
 
-	       
-	       
-	       c.close();
-	    } catch ( Exception e ) {
-	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-	       System.exit(0);
-	    }
-	    System.out.println("Opened database successfully");
-		return 0;
-	}
-	
 	
 	
 	//creates new listing object
-	public static int createListing() {
+	public static int createListing(int sellerID, int quantity, String title, String author, int pubYear, String category, String condition, int value) {
+		
+		//first, create book to list
+		int bookID = createBook(title, author, pubYear, category, condition, value);
+		
+		//then, attach to listing
 		c = null;
 	    try {
 	       Class.forName("org.sqlite.JDBC");
 	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
 	       Statement stmt = c.createStatement();
-
-	       
-	       
+	 
+	       String sql = "INSERT INTO currentListings (sellerid, bookid, quantity)" +
+	    			   	"VALUES (" + sellerID + ", " + bookID + ", " + quantity + ")";
+	       stmt.executeUpdate(sql);
+	       stmt.close();
 	       c.close();
+	       return 1;
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
 	    }
-	    System.out.println("Opened database successfully");
+	    System.out.println("Improper escape from createListing");
 		return 0;
 	}
 	
 	
 	
-	//executes listing (moves listing from currentListings to executedListings
-	public static int executeListing() {
+	//executes listing (moves books from current to executed listings
+	public static int executeListing(int listingID, int buyerID, int quantity, int salePrice) {
 		c = null;
 	    try {
 	       Class.forName("org.sqlite.JDBC");
 	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
 	       Statement stmt = c.createStatement();
-
 	       
+	       //get listing from currentListings
+	       ResultSet rs = stmt.executeQuery("SELECT * FROM currentListings WHERE listingid = '" + listingID + "'");
 	       
-	       c.close();
+	       //if this uses up every copy in listing, delete from currentListing
+	       		//otherwise, decrement currentListing quantity accordingly
+	       if (quantity == rs.getInt("quantity")) {
+	    	   //delete listing from currentListings
+	    	   stmt.executeUpdate("DELETE FROM currentListings WHERE listingid = '" + listingID + "'");	    	   
+	       } else {
+	    	   //decrement listing quantity by proper amount
+	    	   stmt.executeUpdate("UPDATE currentListings SET quantity = " + (rs.getInt("quantity") - quantity) + " WHERE listingid = " + rs.getInt("listingid"));
+	       }
+	       
+	       //create executedListing
+	    	   String sql = "INSERT INTO executedListings (sellerid, buyerid, bookid, quantity, saleprice)" +
+	    			   "VALUES (" + rs.getInt("sellerid") + ", " + buyerID + ", " + rs.getInt("bookid") + ", " + quantity + ", " + salePrice + ")";
+	    	   stmt.executeUpdate(sql);
+	    	   
+	    	   stmt.close();
+	    	   rs.close();
+	    	   c.close();
+	    	   return 1;
+	       
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
 	    }
-	    System.out.println("Opened database successfully");
+	    System.out.println("Improper escape from executeListing");
 		return 0;
 	}
+	
 }
 
 /*
