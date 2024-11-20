@@ -18,10 +18,6 @@ import java.util.*;
 
 public class LoginScreen extends Screen{	
 	
-	private final String testUser = "admin";
-	private final String testPass = "admin";
-	//REMOVE both of these in final implementation
-	
 	LoginScreen () {
 		assembleHeader();
 		assembleContent();
@@ -75,7 +71,8 @@ public class LoginScreen extends Screen{
 			String passIn = passField.getText().toString();
 			//System.out.println(userIn + " " + passIn);
 			
-			if (userIn.equals(testUser) && passIn.equals(testPass)) {
+			ViewController.currentUser = DBMediator.authUser(userIn, passIn);
+			if (ViewController.currentUser != null) {
 				System.out.println("Successful Login");
 				userField.setStyle("-fx-border-color: green");
 				passField.setStyle("-fx-border-color: green");

@@ -33,12 +33,12 @@ public class User {
 		return username;
 	}
 	
-	public void setYear(String usernameIn) {
+	public void setUsername(String usernameIn) {
 		username = usernameIn;
 	}
 	
 	//password
-	public void setPassword(String passwordIn) {
+	/*public void setPassword(String passwordIn) {
 		password = passwordIn;
-	}
+	}*/
 }

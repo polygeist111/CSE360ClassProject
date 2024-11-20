@@ -246,6 +246,38 @@ public class DBMediator {
 		return 0;
 	}
 	
+	
+	
+	//called on signin
+	public static User authUser(String username, String password) {
+		c = null;
+	    try {
+	       Class.forName("org.sqlite.JDBC");
+	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+	       Statement stmt = c.createStatement();
+	       //check if user and pass match. Returns user object if yes, null if no
+	       ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username ='" + username + "' AND password = '" + password + "'");
+	       boolean nameExists = false;
+	       User thisUser = null;
+	       while ( rs.next() ) {
+	          thisUser = new User();
+	          thisUser.setUserID(rs.getInt("userid"));
+	          thisUser.setUsername(username);
+	          thisUser.setStatus(rs.getString("status"));
+	          break;
+	       }
+	       rs.close();
+	       stmt.close();
+	       c.close();
+	       return thisUser;
+	    } catch ( Exception e ) {
+	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	       System.exit(0);
+	    }
+	    System.out.println("Improper escape from authUser");
+		return null;
+	}
+	
 }
 
 /*

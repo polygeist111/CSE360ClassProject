@@ -20,8 +20,8 @@ import java.util.*;
 public class ViewController extends Application{
 	private static Map<String, Screen> screens = new HashMap<String, Screen>();
 	private static Stage stage;
-	//private static User currentUser;
-		//store currently logged in user once authenticated
+	//store currently logged in user once authenticated
+	public static User currentUser;
 	
 	@Override
 	public void start(Stage stage) {
@@ -110,6 +110,7 @@ public class ViewController extends Application{
 		System.out.println("signing out");
 		//CODE: add check for user authentication
 		if (clearScreen(caller) && screens.get("Login") != null) {
+			currentUser = null;
 			stage.setScene(screens.get("Login").screen);
 		} else {
 			System.out.println("No login screen");
