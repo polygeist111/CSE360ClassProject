@@ -27,6 +27,7 @@ public abstract class Screen {
 	protected final double width = 900;
 	protected final double height = 600;
 	protected final double vertMargin = 72;
+	protected final Font regFont = Font.font("Verdana", FontWeight.NORMAL, 16);
 	Scene screen;
 	GridPane root = new GridPane();
 	Screen() {

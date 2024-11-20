@@ -41,14 +41,14 @@ public class LoginScreen extends Screen{
 		
 		//create username label and entry
 		Label userLabel = new Label("Username:");
-		userLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+		userLabel.setFont(regFont);
 		TextField userField = new TextField();
 		loginGrid.add(userLabel, 0, 0);
 		loginGrid.add(userField, 1, 0);
 		
 		//create password label and entry
 		Label passLabel = new Label("Password:");		
-		passLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+		passLabel.setFont(regFont);
 		PasswordField passField = new PasswordField();
 		loginGrid.add(passLabel, 0, 1);
 		loginGrid.add(passField, 1, 1);

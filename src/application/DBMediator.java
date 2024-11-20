@@ -119,7 +119,7 @@ public class DBMediator {
 	    	   stmt.executeUpdate(sql);
 	    	   
 	    	   //get get bookID
-	    	   ResultSet rs2 = stmt.executeQuery("SELECT MAX(id) as bookid FROM books");
+	    	   ResultSet rs2 = stmt.executeQuery("SELECT MAX(bookid) as bookid FROM books");
 	    	   int bookID = rs2.getInt("bookid");
 	    	  
 	    	   rs2.close();
@@ -160,8 +160,14 @@ public class DBMediator {
 	    	   return 0;
 	       //if not, create user
 	       } else {
+	    	   String status = "";
+	    	   if (username == "admin") {
+	    		   status = "Admin";
+	    	   } else {
+	    		   status = "Standard";
+	    	   }
 	    	   String sql = "INSERT INTO users (username, password, status)" +
-	    			   		"VALUES ('" + username + "', '" + password + "', 'Standard')";
+	    			   		"VALUES ('" + username + "', '" + password + "', '" + status + "')";
 	    	   stmt.executeUpdate(sql);
 	    	   stmt.close();
 	    	   
