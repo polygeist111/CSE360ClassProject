@@ -60,13 +60,19 @@ public class LoginScreen extends Screen{
 		loginFeedback.setManaged(false);
 		loginGrid.add(loginFeedback, 0, 2, 2, 1);
 		
+		//hbox to hold auth buttons
+		HBox authBox = new HBox();
+		
 		//create "log in" submit button
 		Button loginButton = new Button("Log In");
-		loginGrid.add(loginButton, 0, 3);
+		authBox.getChildren().add(loginButton);
+		authBox.getChildren().add(createSpacer());
 		
 		//create "Create Account" button
 		Button createAccountButton = new Button("Create Account");
-		loginGrid.add(createAccountButton, 0, 4);
+		authBox.getChildren().add(createAccountButton);
+		loginGrid.add(authBox, 0, 3, 2, 1);
+		
 		
 		//define log in behavior
 		//CODE: edit heavily once database is up
@@ -81,7 +87,6 @@ public class LoginScreen extends Screen{
 				System.out.println("Successful Login");
 				userField.setStyle("-fx-border-color: green");
 				passField.setStyle("-fx-border-color: green");
-				//ViewController.User = <ping db for current user object>;
 				ViewController.goHome("Login");
 				return;
 			}
@@ -121,6 +126,7 @@ public class LoginScreen extends Screen{
 		});
 		
 		
+		
 		// define create account button behavior
 		createAccountButton.setOnAction(event -> {
 			Alert alert = new Alert(AlertType.NONE);
@@ -129,32 +135,79 @@ public class LoginScreen extends Screen{
 			alert.setContentText("This will create an account");
 			
 			GridPane createAccountGrid = new GridPane();
+			createAccountGrid.setVgap(8);
 			
 			// User label and text field
 			Label createUserLabel = new Label("Username: ");
-			createUserLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+			createUserLabel.setFont(regFont);
 			TextField createUserField = new TextField();
 			createAccountGrid.add(createUserLabel, 0, 0);
 			createAccountGrid.add(createUserField, 1, 0);
 			
 			// Password label and text field
 			Label createPassLabel = new Label("Password: ");		
-			passLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+			createPassLabel.setFont(regFont);
 			PasswordField createPassField = new PasswordField();
 			createAccountGrid.add(createPassLabel, 0, 1);
 			createAccountGrid.add(createPassField, 1, 1);
 			
+			HBox confirmBox = new HBox(createSpacer());
+			Button confirmCreate = new Button("Create and Sign In");
+			confirmBox.getChildren().add(confirmCreate);
+			createAccountGrid.add(confirmBox, 0, 2, 2, 1);
 			
 			// Set content of alert
 			alert.getDialogPane().setContent(createAccountGrid);
-			alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+			alert.getButtonTypes().setAll(ButtonType.CANCEL);
 			
+			//set attempt account create event
+			confirmCreate.setOnAction(event1 -> {
+				System.out.println("OK clicked");
+				String feedback = "";
+				
+				//empty username
+				if (createUserField.getText().isEmpty()) {
+					feedback += "Enter a username";
+					createUserField.setStyle("-fx-border-color: red");
+				} else {
+					createUserField.setStyle("-fx-border-color: none");
+				}
+				
+				//empty password
+				if (createPassField.getText().isEmpty()) {
+					if (!feedback.isBlank()) {
+						feedback += "\n";
+					}
+					feedback += "Enter a password";
+					createPassField.setStyle("-fx-border-color: red");
+				} else {
+					createPassField.setStyle("-fx-border-color: none");
+				}
+				
+				//content in both
+				if (feedback.isBlank()) {
+					//attempt create standard user
+					ViewController.currentUser = DBMediator.createUser(createUserField.getText().toString(), createPassField.getText().toString());
+					
+					if (ViewController.currentUser != null) {
+						System.out.println("Successful Login");
+						userField.setStyle("-fx-border-color: green");
+						passField.setStyle("-fx-border-color: green");
+						//ViewController.User = <ping db for current user object>;
+						ViewController.goHome("Login");
+						alert.close();
+					}
+					
+					feedback += "Username is taken, please try a different one";
+					createUserField.setStyle("-fx-border-color: red");						
+				}
+				
+				alert.setHeaderText(feedback);
+			});
 			// Add functionality for when OK is pressed
 			// and validate if the username is available
 			alert.showAndWait().ifPresent(result -> {
-				if (result == ButtonType.OK) {
-					System.out.println("OK clicked");
-				} else if (result == ButtonType.CANCEL) {
+				if (result == ButtonType.CANCEL) {
 					System.out.println("Cancel pressed");
 				}
 			});

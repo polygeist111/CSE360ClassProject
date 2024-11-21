@@ -7,11 +7,6 @@ import java.util.*;
 public class DBMediator {
 	private static Connection c = null;
 	
-	private static int userID = -1;
-	private static int listingID = -1;
-	private static int bookID = -1;
-
-	
 	//called once on app boot, connects to db
 	//sample code modified from https://www.tutorialspoint.com/sqlite/sqlite_java.html
 	public static void initDB() {
@@ -60,6 +55,7 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
+	       createListing(1, 2, "test title", "thalia wood", 2024, "Math", "Used Like New", 2676);
 	       
 	       //create executedListings table
 	       stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
@@ -139,7 +135,7 @@ public class DBMediator {
 	
 	
 	//creates new book object
-	public static int createUser(String username, String password) {
+	public static User createUser(String username, String password) {
 		c = null;
 	    try {
 	       Class.forName("org.sqlite.JDBC");
@@ -158,7 +154,7 @@ public class DBMediator {
 	    	   System.out.println("Username is taken");
 	    	   stmt.close();
 	    	   c.close();
-	    	   return 0;
+	    	   return null;
 	       //if not, create user
 	       } else {
 	    	   String status = "";
@@ -173,14 +169,14 @@ public class DBMediator {
 	    	   stmt.close();
 	    	   
 	    	   c.close();
-	    	   return 1;
+	    	   return authUser(username, password);
 	       }
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
 	    }
 	    System.out.println("Improper escape from createUser");
-		return 0;
+		return null;
 	}
 
 	
@@ -287,42 +283,66 @@ public class DBMediator {
 	}
 	
 	//generic function to return all entries in table WHERE column = searchTerm
-	public static ArrayList<Object> queryColumn(String table, String column, String searchTerm) {
+	public static ArrayList<Object> queryListings(String table, String column, String searchTerm) {
 		ArrayList<Object> results = new ArrayList<>();
 		c = null;
 	    try {
 	       Class.forName("org.sqlite.JDBC");
 	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
 	       Statement stmt = c.createStatement();
+	       
+	       ResultSet rs3 = stmt.executeQuery("SELECT * FROM books");
+	       while (rs3.next()) {
+	       	   System.out.println("Title: " + rs3.getString("title") + " BookID " + rs3.getInt("bookid"));
+	       }
+	       rs3 = stmt.executeQuery("SELECT * FROM currentlistings");
+	       while (rs3.next()) {
+	       	   System.out.println("listingid: " + rs3.getInt("listingid") + " BookID " + rs3.getInt("bookid"));
+	       }
+	       rs3.close();
+
+	       
 	       //check if user and pass match. Returns user object if yes, null if no
-	       ResultSet rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE " + column + " ='" + searchTerm + "'");
+	       //ResultSet rs = stmt.executeQuery("SELECT books.* FROM " + table + ", books WHERE " + table + "." + column + " ='" + searchTerm + "' AND books.bookid = " + table + ".bookid");
+	       //get all listings with books meeting given condition
+	       
+	       //String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books." + column + "='" + searchTerm + "'";
+	       String sql = "SELECT " + table + ".* FROM " + table + ", books";// WHERE " + table + ".bookid = books.bookid";
+	       System.out.println(sql);
+	       ResultSet rs = stmt.executeQuery(sql);
 	       while ( rs.next() ) {
+			System.out.println("checking listing entry");
 	          switch (table) {
-				case "currentListings":
+				case "currentlistings":
+					System.out.println("entering currentListing");
 					Listing thisListing = new Listing();
 					thisListing.setListingID(rs.getInt("listingid"));
 					thisListing.setSellerID(rs.getInt("sellerid"));
 					thisListing.setBookID(rs.getInt("bookid"));
 					thisListing.setQuantity(rs.getInt("quantity"));
 					results.add(thisListing);
+					System.out.println("passed listing");
 					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
 					Book thisBook = new Book();
 					thisBook.setTitle(rs2.getString("title"));
 					thisBook.setAuthor(rs2.getString("author"));
-					thisBook.setYear(rs2.getInt("year"));
+					thisBook.setYear(rs2.getInt("pubyear"));
 					thisBook.setValue(rs.getInt("value"));
 					thisBook.setCategory(rs.getString("category"));
 					thisBook.setCondition(rs.getString("condition"));
 					results.add(thisBook);
+					rs2.close();
 					break;
 				case "users":
+					/*
 					User thisUser = new User();
 			        thisUser.setUserID(rs.getInt("userid"));
 			        thisUser.setUsername(rs.getString("username"));
 			        thisUser.setStatus(rs.getString("status"));
-			        results.add(thisUser);
+			        results.add(thisUser);*/
 					break;
-				case "executedListings":
+				case "executedlistings":
+					System.out.println("entering executedListing");
 					ExecutedSale thisSale = new ExecutedSale();
 					thisSale.setListingID(rs.getInt("listingid"));
 					thisSale.setSellerID(rs.getInt("sellerid"));
@@ -350,6 +370,51 @@ public class DBMediator {
 		return null;
 	}
 	
+	//generic function to return all entries in table WHERE column = searchTerm
+		public static ArrayList<Object> queryCurrentListings(String column, String searchTerm) {
+			ArrayList<Object> results = new ArrayList<>();
+			c = null;
+		    try {
+		       Class.forName("org.sqlite.JDBC");
+		       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+		       Statement stmt = c.createStatement();
+	
+		       //String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books." + column + "='" + searchTerm + "'";
+		       String sql = "SELECT currentlistings.* FROM currentlistings, books";// WHERE " + table + ".bookid = books.bookid";
+		       System.out.println(sql);
+		       ResultSet rs = stmt.executeQuery(sql);
+		       while ( rs.next() ) {
+		    	    System.out.println("checking listing entry");
+		    	    System.out.println("entering currentListing");
+					Listing thisListing = new Listing();
+					thisListing.setListingID(rs.getInt("listingid"));
+					thisListing.setSellerID(rs.getInt("sellerid"));
+					thisListing.setBookID(rs.getInt("bookid"));
+					thisListing.setQuantity(rs.getInt("quantity"));
+					results.add(thisListing);
+					System.out.println("passed listing");
+					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
+					Book thisBook = new Book();
+					thisBook.setTitle(rs2.getString("title"));
+					thisBook.setAuthor(rs2.getString("author"));
+					thisBook.setYear(rs2.getInt("pubyear"));
+					thisBook.setValue(rs.getInt("value"));
+					thisBook.setCategory(rs.getString("category"));
+					thisBook.setCondition(rs.getString("condition"));
+					results.add(thisBook);
+		       }
+		       rs.close();
+		       stmt.close();
+		       c.close();
+		       System.out.println(results.size());
+		       return results;
+		    } catch ( Exception e ) {
+		       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		       System.exit(0);
+		    }
+		    System.out.println("Improper escape from queryColumn");
+			return null;
+		}
 }
 
 /*
