@@ -294,15 +294,6 @@ public class SellerScreen extends Screen {
 			content.add(completionLabelBox, 0, 0);
 			content.add(completionButtonBox, 0, 1);
 			
-			/*
-			 HBox completionButtonBox = new HBox(createSpacer());
-			completionButtonBox.getChildren().add(listAnother);
-			completionButtonBox.getChildren().add(createSpacer());
-			VBox completionBox = new VBox();
-			completionBox.getChildren().add(completionLabelBox);
-			completionBox.getChildren().add(completionButtonBox);
-			content.add(completionBox, 0, 0);
-			 */
 		});
 
 		content.add(sellerGrid, 0, 0);

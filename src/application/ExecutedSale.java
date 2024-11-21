@@ -22,7 +22,7 @@ public class ExecutedSale extends Listing {
 		return salePrice;
 	}
 	
-	public void setListingID(int salePriceIn) {
+	public void setSalePrice(int salePriceIn) {
 		salePrice = salePriceIn;
 	}
 }

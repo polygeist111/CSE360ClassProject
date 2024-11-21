@@ -2,6 +2,7 @@ package application;
 
 import org.json.simple.*;
 import java.sql.*;
+import java.util.*;
 
 public class DBMediator {
 	private static Connection c = null;
@@ -229,9 +230,11 @@ public class DBMediator {
 	       if (quantity == rs.getInt("quantity")) {
 	    	   //delete listing from currentListings
 	    	   stmt.executeUpdate("DELETE FROM currentListings WHERE listingid = '" + listingID + "'");	    	   
-	       } else {
+	       } else  if (quantity <= rs.getInt("quantity")){
 	    	   //decrement listing quantity by proper amount
 	    	   stmt.executeUpdate("UPDATE currentListings SET quantity = " + (rs.getInt("quantity") - quantity) + " WHERE listingid = " + rs.getInt("listingid"));
+	       } else {
+	    	   //CODE: add handling for a change in quantity
 	       }
 	       
 	       //create executedListing
@@ -263,7 +266,6 @@ public class DBMediator {
 	       Statement stmt = c.createStatement();
 	       //check if user and pass match. Returns user object if yes, null if no
 	       ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username ='" + username + "' AND password = '" + password + "'");
-	       boolean nameExists = false;
 	       User thisUser = null;
 	       while ( rs.next() ) {
 	          thisUser = new User();
@@ -281,6 +283,70 @@ public class DBMediator {
 	       System.exit(0);
 	    }
 	    System.out.println("Improper escape from authUser");
+		return null;
+	}
+	
+	//generic function to return all entries in table WHERE column = searchTerm
+	public static ArrayList<Object> queryColumn(String table, String column, String searchTerm) {
+		ArrayList<Object> results = new ArrayList<>();
+		c = null;
+	    try {
+	       Class.forName("org.sqlite.JDBC");
+	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+	       Statement stmt = c.createStatement();
+	       //check if user and pass match. Returns user object if yes, null if no
+	       ResultSet rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE " + column + " ='" + searchTerm + "'");
+	       while ( rs.next() ) {
+	          switch (table) {
+				case "currentListings":
+					Listing thisListing = new Listing();
+					thisListing.setListingID(rs.getInt("listingid"));
+					thisListing.setSellerID(rs.getInt("sellerid"));
+					thisListing.setBookID(rs.getInt("bookid"));
+					thisListing.setQuantity(rs.getInt("quantity"));
+					results.add(thisListing);
+					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
+					Book thisBook = new Book();
+					thisBook.setTitle(rs2.getString("title"));
+					thisBook.setAuthor(rs2.getString("author"));
+					thisBook.setYear(rs2.getInt("year"));
+					thisBook.setValue(rs.getInt("value"));
+					thisBook.setCategory(rs.getString("category"));
+					thisBook.setCondition(rs.getString("condition"));
+					results.add(thisBook);
+					break;
+				case "users":
+					User thisUser = new User();
+			        thisUser.setUserID(rs.getInt("userid"));
+			        thisUser.setUsername(rs.getString("username"));
+			        thisUser.setStatus(rs.getString("status"));
+			        results.add(thisUser);
+					break;
+				case "executedListings":
+					ExecutedSale thisSale = new ExecutedSale();
+					thisSale.setListingID(rs.getInt("listingid"));
+					thisSale.setSellerID(rs.getInt("sellerid"));
+					thisSale.setBookID(rs.getInt("bookid"));
+					thisSale.setQuantity(rs.getInt("quantity"));
+					thisSale.setBuyerID(rs.getInt("buyerid"));
+					thisSale.setSalePrice(rs.getInt("saleprice"));
+					results.add(thisSale);
+					break;
+				default:
+					System.out.println("Invalid Column Query");
+					return null;
+	    	  }
+	       }
+	       rs.close();
+	       stmt.close();
+	       c.close();
+	       System.out.println(results.size());
+	       return results;
+	    } catch ( Exception e ) {
+	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	       System.exit(0);
+	    }
+	    System.out.println("Improper escape from queryColumn");
 		return null;
 	}
 	

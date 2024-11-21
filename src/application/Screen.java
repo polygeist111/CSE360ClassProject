@@ -1,6 +1,8 @@
 package application;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets; 
 import javafx.geometry.Pos;
@@ -198,6 +200,36 @@ public abstract class Screen {
 		box.getChildren().add(boxLabel);
 		
 		return box;
+	}
+	
+	//converts arraylist of listings into browsable book column
+	protected ListView<HBox> createBookColumn(ArrayList<Object> booksIn, String colTitle) {
+		ObservableList<HBox> resultItems = FXCollections.observableArrayList();
+		ListView<HBox> result = new ListView<HBox>();
+		result.setItems(resultItems);
+		
+		HBox header = new HBox();
+		Label title = new Label(colTitle);
+		title.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		header.getChildren().add(title);
+		resultItems.add(header);
+		
+		int totalEntries = 0;
+		for (int i = 0; i < booksIn.size(); i += 2) {
+			int thisQuantity = ((Listing) booksIn.get(i)).getQuantity();
+			totalEntries += thisQuantity;
+			HBox rowEntry = new HBox();
+			rowEntry.getChildren().add(new Label(((Book) booksIn.get(i + 1)).getTitle()));
+			rowEntry.getChildren().add(createSpacer());
+			rowEntry.getChildren().add(new Label("" + thisQuantity));
+			resultItems.add(rowEntry);
+		}
+		
+		Label entryLabel = new Label("" + totalEntries);
+		entryLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		header.getChildren().add(entryLabel);
+		return result;
+		//return null;
 	}
 	
 	protected abstract void assembleHeader();

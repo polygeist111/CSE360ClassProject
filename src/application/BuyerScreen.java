@@ -94,9 +94,7 @@ public class BuyerScreen extends Screen {
 		
 		GridPane browseColumns = new GridPane();
 		browseColumns.setHgap(30);
-		
-		
-		
+		browseColumns.getChildren().add(createBookColumn(DBMediator.queryColumn("books", "condition", "Used Like New"), "Used Like New:"));
 		
 		buyerGrid.add(browseColumns, 0, 1);
 		content.add(buyerGrid, 0, 0);

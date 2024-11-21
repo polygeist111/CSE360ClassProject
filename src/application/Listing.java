@@ -33,7 +33,7 @@ public class Listing {
 		return bookID;
 	}
 	
-	public void setUserID(int bookIDIn) {
+	public void setBookID(int bookIDIn) {
 		bookID = bookIDIn;
 	}
 	
