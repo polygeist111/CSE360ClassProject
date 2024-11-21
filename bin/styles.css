@@ -12,3 +12,7 @@
 .label {
 	-fx-font: 16 Verdana;
 }
+
+.list-view .list-cell:odd {
+    -fx-background-color: #E4E4E4;
+}

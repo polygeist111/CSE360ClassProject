@@ -55,7 +55,7 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
-	       createListing(1, 2, "test title", "thalia wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "Test Title", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
 	       
 	       //create executedListings table
 	       stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
@@ -118,7 +118,7 @@ public class DBMediator {
 	    	   //get get bookID
 	    	   ResultSet rs2 = stmt.executeQuery("SELECT MAX(bookid) as bookid FROM books");
 	    	   int bookID = rs2.getInt("bookid");
-	    	  
+   	  
 	    	   rs2.close();
 	    	   stmt.close();
 	    	   c.close();
@@ -282,46 +282,28 @@ public class DBMediator {
 		return null;
 	}
 	
-	//generic function to return all entries in table WHERE column = searchTerm
-	public static ArrayList<Object> queryListings(String table, String column, String searchTerm) {
+	//function to populate buy page columns
+	public static ArrayList<Object> queryListings(String table, String condition, String category) {
 		ArrayList<Object> results = new ArrayList<>();
 		c = null;
 	    try {
 	       Class.forName("org.sqlite.JDBC");
 	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
 	       Statement stmt = c.createStatement();
-	       
-	       ResultSet rs3 = stmt.executeQuery("SELECT * FROM books");
-	       while (rs3.next()) {
-	       	   System.out.println("Title: " + rs3.getString("title") + " BookID " + rs3.getInt("bookid"));
-	       }
-	       rs3 = stmt.executeQuery("SELECT * FROM currentlistings");
-	       while (rs3.next()) {
-	       	   System.out.println("listingid: " + rs3.getInt("listingid") + " BookID " + rs3.getInt("bookid"));
-	       }
-	       rs3.close();
-
-	       
-	       //check if user and pass match. Returns user object if yes, null if no
-	       //ResultSet rs = stmt.executeQuery("SELECT books.* FROM " + table + ", books WHERE " + table + "." + column + " ='" + searchTerm + "' AND books.bookid = " + table + ".bookid");
-	       //get all listings with books meeting given condition
-	       
-	       //String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books." + column + "='" + searchTerm + "'";
-	       String sql = "SELECT " + table + ".* FROM " + table + ", books";// WHERE " + table + ".bookid = books.bookid";
+	       	       
+	       String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books.condition ='" + condition + "' AND books.category = '" + category + "'";
+	       //String sql = "SELECT " + table + ".* FROM " + table + ", books";// WHERE " + table + ".bookid = books.bookid";
 	       System.out.println(sql);
 	       ResultSet rs = stmt.executeQuery(sql);
 	       while ( rs.next() ) {
-			System.out.println("checking listing entry");
 	          switch (table) {
 				case "currentlistings":
-					System.out.println("entering currentListing");
 					Listing thisListing = new Listing();
 					thisListing.setListingID(rs.getInt("listingid"));
 					thisListing.setSellerID(rs.getInt("sellerid"));
 					thisListing.setBookID(rs.getInt("bookid"));
 					thisListing.setQuantity(rs.getInt("quantity"));
 					results.add(thisListing);
-					System.out.println("passed listing");
 					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
 					Book thisBook = new Book();
 					thisBook.setTitle(rs2.getString("title"));
@@ -402,6 +384,7 @@ public class DBMediator {
 					thisBook.setCategory(rs.getString("category"));
 					thisBook.setCondition(rs.getString("condition"));
 					results.add(thisBook);
+					rs2.close();
 		       }
 		       rs.close();
 		       stmt.close();

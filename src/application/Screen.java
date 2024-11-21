@@ -19,7 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 import java.util.*;
 
 public abstract class Screen {
@@ -110,6 +110,7 @@ public abstract class Screen {
 		content.setPrefHeight(height - 2 * vertMargin - 50);
 		content.setAlignment(Pos.CENTER);
 		GridPane.setMargin(content, new Insets(25, 25, 25, 25));
+		content.setPadding(new Insets(20));
 		//content.setPadding(new Insets(30, 30, 30, 30));
 		
 		return content;
@@ -216,12 +217,49 @@ public abstract class Screen {
 		
 		int totalEntries = 0;
 		for (int i = 0; i < booksIn.size(); i += 2) {
-			int thisQuantity = ((Listing) booksIn.get(i)).getQuantity();
+			Listing listing = (Listing) booksIn.get(i);
+			Book book = (Book) booksIn.get(i + 1);
+			int thisQuantity = listing.getQuantity();
 			totalEntries += thisQuantity;
 			HBox rowEntry = new HBox();
-			rowEntry.getChildren().add(new Label(((Book) booksIn.get(i + 1)).getTitle()));
+			rowEntry.getChildren().add(new Label(book.getTitle()));
 			rowEntry.getChildren().add(createSpacer());
 			rowEntry.getChildren().add(new Label("" + thisQuantity));
+			Tooltip tip = new Tooltip();
+			tip.setAutoHide(false);
+			tip.setShowDuration(new Duration(10000));
+			
+			//create tooltip view
+			GridPane tipPane = new GridPane();
+			tipPane.setHgap(8);
+			tipPane.add(new Label("Title:"), 0, 0);
+			tipPane.add(new Label(book.getTitle()), 1, 0);
+			tipPane.add(new Label("Author:"), 0, 1);
+			tipPane.add(new Label(book.getAuthor()), 1, 1);
+			tipPane.add(new Label("Condition:"), 0, 2);
+			tipPane.add(new Label(book.getCondition()), 1, 2);
+			
+			tipPane.add(new Label("Category:"), 2, 0);
+			tipPane.add(new Label(book.getCategory()), 3, 0);
+			tipPane.add(new Label("Pub. Year:"), 2, 1);
+			tipPane.add(new Label("" + book.getYear()), 3, 1);
+			tipPane.add(new Label("Quantity:"), 2, 2);
+			tipPane.add(new Label("" + listing.getQuantity()), 3, 2);
+			double cents = (double) book.getValue();
+			cents /= 100.0;
+			tipPane.add(new Label("Price:"), 0, 3);
+			tipPane.add(new Label(String.format("$%.2f", cents)), 1, 3);
+			
+			tip.setGraphic(tipPane);
+			
+			Tooltip.install(rowEntry, tip);
+			
+			if ((i / 2) % 2 == 0) {
+				rowEntry.setStyle("--fx-background-color: #FF0000");
+			} else {
+				rowEntry.setStyle("--fx-background-color: #0000FF");
+			}
+			
 			resultItems.add(rowEntry);
 		}
 		

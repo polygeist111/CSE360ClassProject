@@ -64,7 +64,7 @@ public class Book {
 	}
 	
 	public void setCondition(String conditionIn) {
-		author = conditionIn;
+		condition = conditionIn;
 	}
 	
 	//value (cents)

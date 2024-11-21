@@ -19,11 +19,14 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 public class BuyerScreen extends Screen {
-	//REMOVE both of these in final implementation
+	private String category = "Other";
+	private HBox categorySelect;
+	private GridPane browseColumns;
 	
 	BuyerScreen () {
 		assembleHeader();
 		assembleContent();
+		toggleSelection();
 		assembleFooter();
 		screen = new Scene(root);
 	};
@@ -34,25 +37,26 @@ public class BuyerScreen extends Screen {
 		header.getChildren().add(createSpacer());
 		header.getChildren().add(createSignOutButton("Buy"));
 		root.add(header, 0, 0);
-		root.add(createTitle("Selling"), 0, 0);
+		root.add(createTitle("Buying"), 0, 0);
 	}
 	
 	protected void assembleContent() {
-		GridPane content = createContentWindow();
-		
+		GridPane content = createContentWindow();		
 		
 		//create grid holding seller objects
 		GridPane buyerGrid = new GridPane();
 		buyerGrid.setVgap(15);
 		buyerGrid.setHgap(15);
 		
-		HBox categorySelect = new HBox();
+		categorySelect = new HBox();
 		
 		//create computer category button
 		categorySelect.getChildren().add(createSpacer());
 		Button computerCat = new Button("Computer");
 		computerCat.setOnAction(event -> {
 			System.out.println("Computer category selected");
+			category = "Computer";
+			toggleSelection();
 		});
 		categorySelect.getChildren().add(computerCat);
 		
@@ -61,6 +65,8 @@ public class BuyerScreen extends Screen {
 		Button englishCat = new Button("English Language");
 		englishCat.setOnAction(event -> {
 			System.out.println("English Language category selected");
+			category = "English Language";
+			toggleSelection();
 		});
 		categorySelect.getChildren().add(englishCat);
 		
@@ -69,6 +75,8 @@ public class BuyerScreen extends Screen {
 		Button mathCat = new Button("Math");
 		mathCat.setOnAction(event -> {
 			System.out.println("Math category selected");
+			category = "Math";
+			toggleSelection();
 		});
 		categorySelect.getChildren().add(mathCat);
 		
@@ -77,6 +85,8 @@ public class BuyerScreen extends Screen {
 		Button natsciCat = new Button("Natural Science");
 		natsciCat.setOnAction(event -> {
 			System.out.println("Natural Science category selected");
+			category = "Natural Science";
+			toggleSelection();
 		});
 		categorySelect.getChildren().add(natsciCat);
 		
@@ -85,6 +95,8 @@ public class BuyerScreen extends Screen {
 		Button otherCat = new Button("Other");
 		otherCat.setOnAction(event -> {
 			System.out.println("Other category selected");
+			category = "Other";
+			toggleSelection();
 		});
 		categorySelect.getChildren().add(otherCat);
 		
@@ -92,9 +104,9 @@ public class BuyerScreen extends Screen {
 		buyerGrid.add(categorySelect, 0, 0);
 		
 		
-		GridPane browseColumns = new GridPane();
+		browseColumns = new GridPane();
 		browseColumns.setHgap(30);
-		browseColumns.getChildren().add(createBookColumn(DBMediator.queryListings("currentlistings", "condition", "Used Like New"), "Used Like New: "));
+		browseCategory();
 		
 		buyerGrid.add(browseColumns, 0, 1);
 		content.add(buyerGrid, 0, 0);
@@ -126,5 +138,29 @@ public class BuyerScreen extends Screen {
 		creditFrame.setPadding(new Insets(5));
 		creditFrame.setAlignment(Pos.BOTTOM_RIGHT);
 		root.add(creditFrame, 0, 2);
+	}
+	
+	//adjusts button selection and updates db output
+	private void toggleSelection() {
+		for (Node child : categorySelect.getChildren()) {
+			if (child instanceof Button) {
+				if (((Button) child).getText() == category) {
+					child.setStyle("-fx-background-color: #FFC627; -fx-text-fill: #090909;");
+				} else {
+					child.setStyle("-fx-background-color: #8C1D40; -fx-text-fill: #F6F6F6;");
+				}
+			}
+		}
+		browseCategory();
+	}
+	
+	//queries db for category results and updates screen
+	private void browseCategory() {
+		ListView<HBox> ulnColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Used Like New", category), "Used Like New: ");
+		browseColumns.add(ulnColumn, 0, 0);
+		ListView<HBox> muColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Moderately Used", category), "Moderately Used: ");
+		browseColumns.add(muColumn, 1, 0);
+		ListView<HBox> huColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Heavily Used", category), "Heavily Used: ");
+		browseColumns.add(huColumn, 2, 0);
 	}
 }
