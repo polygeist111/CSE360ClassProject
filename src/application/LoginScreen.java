@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.Event;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert.AlertType;
 
 import java.util.*;
 
@@ -62,6 +63,10 @@ public class LoginScreen extends Screen{
 		//create "log in" submit button
 		Button loginButton = new Button("Log In");
 		loginGrid.add(loginButton, 0, 3);
+		
+		//create "Create Account" button
+		Button createAccountButton = new Button("Create Account");
+		loginGrid.add(createAccountButton, 0, 4);
 		
 		//define log in behavior
 		//CODE: edit heavily once database is up
@@ -113,6 +118,46 @@ public class LoginScreen extends Screen{
 			System.out.println("Login Failed:");
 			System.out.println(feedback);
 			
+		});
+		
+		
+		// define create account button behavior
+		createAccountButton.setOnAction(event -> {
+			Alert alert = new Alert(AlertType.NONE);
+			alert.setTitle("Create Account");
+			alert.setHeaderText("Enter your details");
+			alert.setContentText("This will create an account");
+			
+			GridPane createAccountGrid = new GridPane();
+			
+			// User label and text field
+			Label createUserLabel = new Label("Username: ");
+			createUserLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+			TextField createUserField = new TextField();
+			createAccountGrid.add(createUserLabel, 0, 0);
+			createAccountGrid.add(createUserField, 1, 0);
+			
+			// Password label and text field
+			Label createPassLabel = new Label("Password: ");		
+			passLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+			PasswordField createPassField = new PasswordField();
+			createAccountGrid.add(createPassLabel, 0, 1);
+			createAccountGrid.add(createPassField, 1, 1);
+			
+			
+			// Set content of alert
+			alert.getDialogPane().setContent(createAccountGrid);
+			alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+			
+			// Add functionality for when OK is pressed
+			// and validate if the username is available
+			alert.showAndWait().ifPresent(result -> {
+				if (result == ButtonType.OK) {
+					System.out.println("OK clicked");
+				} else if (result == ButtonType.CANCEL) {
+					System.out.println("Cancel pressed");
+				}
+			});
 		});
 		
 
