@@ -55,7 +55,10 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
-	       createListing(1, 2, "Test Title", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "Test Title 1", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 5, "Test Title 2", "Thalia Wood", 2023, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 3", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
+
 	       
 	       //create executedListings table
 	       stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
@@ -294,8 +297,19 @@ public class DBMediator {
 	       String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books.condition ='" + condition + "' AND books.category = '" + category + "'";
 	       //String sql = "SELECT " + table + ".* FROM " + table + ", books";// WHERE " + table + ".bookid = books.bookid";
 	       System.out.println(sql);
+	       
+	       ResultSet rs3 = stmt.executeQuery(sql);
+	       while(rs3.next()) {
+				System.out.println("listing found ool");
+	       }
+	       rs3.close();
+	       stmt.close();
+	       
+	       stmt = c.createStatement();
 	       ResultSet rs = stmt.executeQuery(sql);
 	       while ( rs.next() ) {
+	    	  System.out.println("listing found il");	    	   
+
 	          switch (table) {
 				case "currentlistings":
 					Listing thisListing = new Listing();
@@ -304,16 +318,19 @@ public class DBMediator {
 					thisListing.setBookID(rs.getInt("bookid"));
 					thisListing.setQuantity(rs.getInt("quantity"));
 					results.add(thisListing);
-					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
+					Statement stmt2 = c.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
 					Book thisBook = new Book();
 					thisBook.setTitle(rs2.getString("title"));
 					thisBook.setAuthor(rs2.getString("author"));
 					thisBook.setYear(rs2.getInt("pubyear"));
-					thisBook.setValue(rs.getInt("value"));
-					thisBook.setCategory(rs.getString("category"));
+					System.out.println("here");
 					thisBook.setCondition(rs.getString("condition"));
+					thisBook.setCategory(rs.getString("category"));
+					thisBook.setValue(rs.getInt("value"));
 					results.add(thisBook);
 					rs2.close();
+					stmt2.close();
 					break;
 				case "users":
 					/*

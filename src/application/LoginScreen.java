@@ -87,7 +87,7 @@ public class LoginScreen extends Screen{
 				System.out.println("Successful Login");
 				userField.setStyle("-fx-border-color: green");
 				passField.setStyle("-fx-border-color: green");
-				ViewController.goHome("Login");
+				ViewController.goHome();
 				return;
 			}
 			
@@ -194,7 +194,7 @@ public class LoginScreen extends Screen{
 						userField.setStyle("-fx-border-color: green");
 						passField.setStyle("-fx-border-color: green");
 						//ViewController.User = <ping db for current user object>;
-						ViewController.goHome("Login");
+						ViewController.goHome();
 						alert.close();
 					}
 					

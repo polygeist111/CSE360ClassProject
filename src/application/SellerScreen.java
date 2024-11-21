@@ -270,7 +270,7 @@ public class SellerScreen extends Screen {
 		//not visible until book is listed
 		Button listAnother = new Button("List Another Book");
 		listAnother.setOnAction(event -> {
-			ViewController.goSelling("Sell");
+			ViewController.goSelling();
 		});
 		
 		//define list book behavior

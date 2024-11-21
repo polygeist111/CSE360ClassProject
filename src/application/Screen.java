@@ -122,7 +122,7 @@ public abstract class Screen {
 		
 		Button homeBut = new Button("Return Home");
 		homeBut.setOnAction(event -> {
-			ViewController.goHome(caller);
+			ViewController.goHome();
 		});
 	
         return homeBut;
@@ -134,7 +134,7 @@ public abstract class Screen {
 		
 		Button shopBut = new Button("Return to Shopping");
 		shopBut.setOnAction(event -> {
-			ViewController.goShopping(caller);
+			ViewController.goShopping();
 		});
 			
 		
@@ -148,7 +148,7 @@ public abstract class Screen {
 		
 		Button signoutBut = new Button("Sign Out");
 		signoutBut.setOnAction(event -> {
-			ViewController.signOut(caller);
+			ViewController.signOut();
 		});
 		
 		
@@ -161,7 +161,7 @@ public abstract class Screen {
 		
 		Button signoutBut = new Button("View Cart");
 		signoutBut.setOnAction(event -> {
-			ViewController.goCart(caller);
+			ViewController.goCart();
 		});
 		
 		
@@ -184,13 +184,13 @@ public abstract class Screen {
 		boxButton.setOnAction(event -> {
 			switch (eventType) {
 				case "Buy":
-					ViewController.goShopping(caller);
+					ViewController.goShopping();
 					break;
 				case "Sell":
-					ViewController.goSelling(caller);
+					ViewController.goSelling();
 					break;
 				case "Profile":
-					ViewController.goProfile(caller);
+					ViewController.goProfile();
 					break;
 				default:
 					System.out.println("Not a recognized event type");
@@ -227,7 +227,7 @@ public abstract class Screen {
 			rowEntry.getChildren().add(new Label("" + thisQuantity));
 			Tooltip tip = new Tooltip();
 			tip.setAutoHide(false);
-			tip.setShowDuration(new Duration(10000));
+			tip.setShowDuration(new Duration(30000));
 			
 			//create tooltip view
 			GridPane tipPane = new GridPane();
@@ -255,11 +255,25 @@ public abstract class Screen {
 			Tooltip.install(rowEntry, tip);
 			
 			if ((i / 2) % 2 == 0) {
-				rowEntry.setStyle("--fx-background-color: #FF0000");
+				//rowEntry.setStyle("--fx-background-color: #FF0000");
 			} else {
-				rowEntry.setStyle("--fx-background-color: #0000FF");
+				//rowEntry.setStyle("--fx-background-color: #0000FF");
 			}
-			
+			/*
+			rowEntry.setOnMouseClicked(event -> {
+				
+				int j = 0;
+				for (HBox row : resultItems) {
+					if ((j / 2) % 2 == 0) {
+						row.setStyle("--fx-background-color: #FF0000");
+					} else {
+						row.setStyle("--fx-background-color: #0000FF");
+					}
+					j++;
+				}
+				rowEntry.setStyle("--fx-background-color: #0096C9");
+				System.out.println("clicked");
+			});*/
 			resultItems.add(rowEntry);
 		}
 		

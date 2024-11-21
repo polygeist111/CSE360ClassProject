@@ -109,6 +109,14 @@ public class BuyerScreen extends Screen {
 		browseCategory();
 		
 		buyerGrid.add(browseColumns, 0, 1);
+		
+		HBox deselBox = new HBox(createSpacer());
+		Label deselectTip = new Label("Ctrl+Click to Deselect");
+		deselectTip.setTextAlignment(TextAlignment.CENTER);
+		deselBox.getChildren().add(deselectTip);
+		deselBox.getChildren().add(createSpacer());
+		buyerGrid.add(deselBox, 0, 2);
+		
 		content.add(buyerGrid, 0, 0);
 		
 		root.add(content, 0, 1);
