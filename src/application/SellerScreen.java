@@ -34,9 +34,9 @@ public class SellerScreen extends Screen {
 
 	protected void assembleHeader() {
 		HBox header = createHeader();
-		header.getChildren().add(createReturnHomeButton("Sell"));
+		header.getChildren().add(createReturnHomeButton());
 		header.getChildren().add(createSpacer());
-		header.getChildren().add(createSignOutButton("Sell"));
+		header.getChildren().add(createSignOutButton());
 		root.add(header, 0, 0);
 		root.add(createTitle("Selling"), 0, 0);
 	}

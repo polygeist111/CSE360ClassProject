@@ -25,10 +25,11 @@ public class BuyerScreen extends Screen {
 	private String category = "Other";
 	private HBox categorySelect;
 	private GridPane browseColumns;
+	private Button addToCart;
+	private Button removeFromCart;
 	private Label currentSelection;
-	
-	//holds listingID of current selection for cart
-	private int selectedListing = -1;
+	private HBox selectedListing;
+	private Map<Integer, HBox> cartedListings = new HashMap<Integer, HBox>();
 	
 	BuyerScreen () {
 		assembleHeader();
@@ -40,9 +41,9 @@ public class BuyerScreen extends Screen {
 
 	protected void assembleHeader() {
 		HBox header = createHeader();
-		header.getChildren().add(createReturnHomeButton("Buy"));
+		header.getChildren().add(createReturnHomeButton());
 		header.getChildren().add(createSpacer());
-		header.getChildren().add(createSignOutButton("Buy"));
+		header.getChildren().add(createSignOutButton());
 		root.add(header, 0, 0);
 		root.add(createTitle("Buying"), 0, 0);
 	}
@@ -122,7 +123,7 @@ public class BuyerScreen extends Screen {
 		deselectTip.setTextAlignment(TextAlignment.CENTER);
 		deselBox.getChildren().add(deselectTip);
 		deselBox.getChildren().add(createSpacer());
-		currentSelection = new Label("");
+		currentSelection = new Label("No listing selected");
 		currentSelection.setTextAlignment(TextAlignment.CENTER);
 		deselBox.getChildren().add(currentSelection);
 		deselBox.getChildren().add(createSpacer());
@@ -141,26 +142,61 @@ public class BuyerScreen extends Screen {
 		footer.setSpacing(15);
 		footer.setAlignment(Pos.CENTER_LEFT);
 		
-		Button addToCart = new Button("Add to Cart");
+		addToCart = new Button("Add to Cart");
+		addToCart.setDisable(true);
 		addToCart.setOnAction(event -> {
 			System.out.println("Adding selection to cart");
+			selectedListing.getStyleClass().add("selectedListing");
+			cartedListings.put(Integer.parseInt(((Label) selectedListing.getChildren().get(3)).getText()), selectedListing);
+			addToCart.setDisable(true);
+			removeFromCart.setDisable(false);
+			
 		});
 		footer.getChildren().add(addToCart);
 		
-		footer.getChildren().add(createViewCartButton("Buy"));
+		removeFromCart = new Button("Remove from Cart");
+		removeFromCart.setDisable(true);
+		removeFromCart.setOnAction(event -> {
+			System.out.println("Removing selection from cart");
+			selectedListing.getStyleClass().remove("selectedListing");
+			cartedListings.remove(Integer.parseInt(((Label) selectedListing.getChildren().get(3)).getText()));
+			addToCart.setDisable(false);
+			removeFromCart.setDisable(true);
+		});
+		footer.getChildren().add(removeFromCart);
 		
-		root.add(footer, 0, 2);
+		Button cartButton = new Button("View Cart");
+		cartButton.setOnAction(event -> {
+			cartedListings.forEach((key, value) -> {
+				System.out.println("ListingID: " + key + " TItle: " + ((Label) value.getChildren().get(0)).getText());
+			});
+		});
+		footer.getChildren().add(cartButton);
+		
+		
+		//root.add(footer, 0, 2);
 		
 		Text credit = new Text("Made by CSE 360 Group 16");
 		credit.setFont(Font.font("Verdana", FontWeight.NORMAL, 10));
 		HBox creditFrame = new HBox(credit);
 		creditFrame.setPadding(new Insets(5));
 		creditFrame.setAlignment(Pos.BOTTOM_RIGHT);
-		root.add(creditFrame, 0, 2);
+		
+		footer.getChildren().add(createSpacer());
+		footer.getChildren().add(creditFrame);
+		
+		root.add(footer, 0, 2);
 	}
 	
 	//adjusts button selection and updates db output
 	private void toggleSelection() {
+		currentSelection.setText("No listing selected");
+		if (addToCart != null) {			
+			addToCart.setDisable(true);
+		}
+		if (removeFromCart != null) {
+			removeFromCart.setDisable(true);			
+		}
 		for (Node child : categorySelect.getChildren()) {
 			if (child instanceof Button) {
 				if (((Button) child).getText() == category) {
@@ -176,13 +212,13 @@ public class BuyerScreen extends Screen {
 	//queries db for category results and updates screen
 	private void browseCategory() {
 		ArrayList<ListView<HBox>> buyColumns = new ArrayList<>();
-		ListView<HBox> ulnColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Used Like New", category), "Used Like New: ");
+		ListView<HBox> ulnColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Used Like New", category), "Used Like New: ", cartedListings);
 		buyColumns.add(ulnColumn);
 		browseColumns.add(ulnColumn, 0, 0);
-		ListView<HBox> muColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Moderately Used", category), "Moderately Used: ");
+		ListView<HBox> muColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Moderately Used", category), "Moderately Used: ", cartedListings);
 		buyColumns.add(muColumn);
 		browseColumns.add(muColumn, 1, 0);
-		ListView<HBox> huColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Heavily Used", category), "Heavily Used: ");
+		ListView<HBox> huColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Heavily Used", category), "Heavily Used: ", cartedListings);
 		buyColumns.add(huColumn);
 		browseColumns.add(huColumn, 2, 0);
 		
@@ -192,6 +228,8 @@ public class BuyerScreen extends Screen {
 				new ChangeListener<HBox>() {
 			    	public void changed(ObservableValue<? extends HBox> ov, HBox old_val, HBox new_val) {
 			        	System.out.println("selection made");
+			        	addToCart.setDisable(true);
+			        	removeFromCart.setDisable(true);
 			        	//ensure header cannot be clicked
 			        	if (child.getSelectionModel().getSelectedIndex() == 0) {
 			        		Platform.runLater(() -> child.getSelectionModel().clearSelection() );
@@ -203,21 +241,23 @@ public class BuyerScreen extends Screen {
 			            			//child.getSelectionModel().
 			            			Platform.runLater(() -> child.getSelectionModel().clearSelection() );
 			            		} else {
-			            			System.out.println("Updating Selection Info");
-			            			String title = "";
-			            			String condition = "";
-			            			int listingID = 0;
-			            			for (Node hboxChild : new_val.getChildren()) {
-			            				if (hboxChild instanceof GridPane) {
-			            					for (Node gridChild : ((GridPane) hboxChild).getChildren()) {
-			            						if (gridChild instanceof Label) {
-			            							System.out.println(((Label) gridChild).getText());
-			            						}
-			            					}
+			            			//extract listing ID, write in bottom-right text what the selection is
+			            			if (new_val != null ) {
+			            				System.out.println("Updating Selection Info");
+			            				String title = ((Label) new_val.getChildren().get(0)).getText();
+			            				String condition = ((Label) new_val.getChildren().get(4)).getText();
+			            				int listingID = Integer.parseInt(((Label) new_val.getChildren().get(3)).getText());
+			            				System.out.println(title + " " + condition + " " + listingID);
+			            				currentSelection.setText(title + " (" + condition + ")");
+			            				//enable add or remove from cart as appropriate
+			            				selectedListing = new_val;
+			            				if (new_val.getStyleClass().contains("selectedListing")) {
+			            					removeFromCart.setDisable(false);
+			            				} else {
+			            					addToCart.setDisable(false);
 			            				}
+			            				
 			            			}
-			            			
-			            			currentSelection.setText(title + " (" + condition + ")");
 			            		}
 			            	}
 			            }
@@ -227,4 +267,6 @@ public class BuyerScreen extends Screen {
 		}
 		
 	}
+	
+	
 }

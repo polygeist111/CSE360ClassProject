@@ -120,7 +120,7 @@ public abstract class Screen {
 	}
 	
 	//returns button that will return regular user to home screen
-	protected Button createReturnHomeButton(String caller) {
+	protected Button createReturnHomeButton() {
 		System.out.println("Creating Return Home Button");
 		
 		Button homeBut = new Button("Return Home");
@@ -132,7 +132,7 @@ public abstract class Screen {
 	}
 	
 	//returns button that will return regular user from cart to buy screen
-	protected Button createReturnShoppingButton(String caller) {
+	protected Button createReturnShoppingButton() {
 		System.out.println("Creating Return Shopping Button");
 		
 		Button shopBut = new Button("Return to Shopping");
@@ -146,7 +146,7 @@ public abstract class Screen {
 	}
 	
 	//returns button that will return any user to login page, signed out
-	protected Button createSignOutButton(String caller) {
+	protected Button createSignOutButton() {
 		System.out.println("Creating Sign Out Button");
 		
 		Button signoutBut = new Button("Sign Out");
@@ -158,21 +158,26 @@ public abstract class Screen {
 		return signoutBut;
 	}
 	
+	/*
 	//returns button that will take regular user from buy screen to cart
-	protected Button createViewCartButton(String caller) {
+	protected Button createViewCartButton() {
 		System.out.println("Creating View Cart Button");
 		
-		Button signoutBut = new Button("View Cart");
-		signoutBut.setOnAction(event -> {
-			ViewController.goCart();
+		Button viewCartBut = new Button("View Cart");
+		viewCartBut.setOnAction(event -> {
+			System.out.println("called scene change");
+			//ViewController.goCart();
 		});
 		
 		
-		return signoutBut;
+		return viewCartBut;
+	}*/
+	protected void goToCart() {
+		ViewController.goCart();
 	}
 	
 	//takes in label name, file name, event name and will return vbox containing icon button and label
-	protected VBox createIconButton(String label, String fileName, String eventType, String caller) {
+	protected VBox createIconButton(String label, String fileName, String eventType) {
 		int iconDim = 120;
 		VBox box = new VBox(10);
 		box.setAlignment(Pos.CENTER);
@@ -207,7 +212,7 @@ public abstract class Screen {
 	}
 	
 	//converts arraylist of listings into browsable book column
-	protected ListView<HBox> createBookColumn(ArrayList<Object> booksIn, String colTitle) {
+	protected ListView<HBox> createBookColumn(ArrayList<Object> booksIn, String colTitle, Map<Integer, HBox> cartMap) {
 		ObservableList<HBox> resultItems = FXCollections.observableArrayList();
 		ListView<HBox> result = new ListView<HBox>();
 		result.setItems(resultItems);
@@ -232,6 +237,19 @@ public abstract class Screen {
 			Label hiddenListingID = new Label("" + listing.getListingID());
 			hiddenListingID.setManaged(false);
 			rowEntry.getChildren().add(hiddenListingID);
+			
+			Label hiddenCondition = new Label(book.getCondition());
+			hiddenCondition.setManaged(false);
+			rowEntry.getChildren().add(hiddenCondition);
+			
+			//optional handling of cart status
+			if (cartMap != null) {
+				if (cartMap.containsKey(listing.getListingID())) {
+					rowEntry.getStyleClass().add("selectedListing");					
+				}
+			}
+			
+			
 			Tooltip tip = new Tooltip();
 			
 			//currently trying to hide listingID and Condition in hbox to be queried for cart selection

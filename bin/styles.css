@@ -19,5 +19,9 @@
 
 .list-view .list-cell:selected {
    -fx-background-color: blue;
- }
+}
  
+.list-view .selectedListing {
+	-fx-background-color: violet;
+	-fx-text-color: white;
+}

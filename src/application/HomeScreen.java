@@ -28,7 +28,7 @@ public class HomeScreen extends Screen{
 	protected void assembleHeader() {
 		HBox header = createHeader();
 		header.getChildren().add(createSpacer());
-		header.getChildren().add(createSignOutButton("Home"));
+		header.getChildren().add(createSignOutButton());
 		root.add(header, 0, 0);
 		root.add(createTitle("Home"), 0, 0);
 	}
@@ -95,9 +95,9 @@ public class HomeScreen extends Screen{
 		buy.getChildren().add(buyLabel);
 		content.add(buy, 0, 0);
 		*/
-		VBox buy = createIconButton("Buy Books", "book", "Buy", "Home");
-		VBox sell = createIconButton("Sell Books", "coins", "Sell", "Home");
-		VBox profile = createIconButton("View Profile", "user", "Profile", "Home");
+		VBox buy = createIconButton("Buy Books", "book", "Buy");
+		VBox sell = createIconButton("Sell Books", "coins", "Sell");
+		VBox profile = createIconButton("View Profile", "user", "Profile");
 		
 		content.add(buy, 0, 0);
 		content.add(sell, 1, 0);
