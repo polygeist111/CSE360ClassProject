@@ -1,6 +1,8 @@
 package application;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -21,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.*;
+
 
 public abstract class Screen {
 	protected final Color gold = Color.web("0xFFC627", 1.0);
@@ -225,7 +228,13 @@ public abstract class Screen {
 			rowEntry.getChildren().add(new Label(book.getTitle()));
 			rowEntry.getChildren().add(createSpacer());
 			rowEntry.getChildren().add(new Label("" + thisQuantity));
+			
+			Label hiddenListingID = new Label("" + listing.getListingID());
+			hiddenListingID.setManaged(false);
+			rowEntry.getChildren().add(hiddenListingID);
 			Tooltip tip = new Tooltip();
+			
+			//currently trying to hide listingID and Condition in hbox to be queried for cart selection
 			tip.setAutoHide(false);
 			tip.setShowDuration(new Duration(30000));
 			
@@ -254,34 +263,24 @@ public abstract class Screen {
 			
 			Tooltip.install(rowEntry, tip);
 			
-			if ((i / 2) % 2 == 0) {
-				//rowEntry.setStyle("--fx-background-color: #FF0000");
-			} else {
-				//rowEntry.setStyle("--fx-background-color: #0000FF");
-			}
-			/*
-			rowEntry.setOnMouseClicked(event -> {
-				
-				int j = 0;
-				for (HBox row : resultItems) {
-					if ((j / 2) % 2 == 0) {
-						row.setStyle("--fx-background-color: #FF0000");
-					} else {
-						row.setStyle("--fx-background-color: #0000FF");
-					}
-					j++;
-				}
-				rowEntry.setStyle("--fx-background-color: #0096C9");
-				System.out.println("clicked");
-			});*/
 			resultItems.add(rowEntry);
 		}
 		
 		Label entryLabel = new Label("" + totalEntries);
 		entryLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		header.getChildren().add(entryLabel);
+		
+		/*result.getSelectionModel().selectedItemProperty().addListener(
+	        new ChangeListener<HBox>() {
+	        public void changed(ObservableValue<? extends HBox> ov, HBox old_val, HBox new_val) {
+	        	System.out.println("selection made");
+	        	//ensure header cannot be clicked
+	        	if (result.getSelectionModel().getSelectedIndex() == 0) {
+	            	result.getSelectionModel().clearSelection();
+	            }
+	        }
+	    });*/
 		return result;
-		//return null;
 	}
 	
 	protected abstract void assembleHeader();

@@ -55,9 +55,25 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
-	       createListing(1, 2, "Test Title 1", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Thalia Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       
+	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
+	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
+	       
+	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
+	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
+
 
 	       
 	       //create executedListings table
@@ -100,7 +116,9 @@ public class DBMediator {
 	       									+ "AND condition = '" + condition + "'"
 	       									+ "AND value     = '" + value     + "'");
 	       boolean bookExists = false;
+	       int existingID = -1;
 	       while ( rs.next() ) {
+	    	  existingID = rs.getInt("bookid");
 	          bookExists = true;
 	          break;
 	       }
@@ -110,7 +128,7 @@ public class DBMediator {
 	    	   System.out.println("Book already exists! No action needed");
 	    	   stmt.close();
 	    	   c.close();
-	    	   return 0;
+	    	   return existingID;
 	       //if not, create book
 	       } else {
 	    	   //create book
@@ -309,7 +327,6 @@ public class DBMediator {
 	       ResultSet rs = stmt.executeQuery(sql);
 	       while ( rs.next() ) {
 	    	  System.out.println("listing found il");	    	   
-
 	          switch (table) {
 				case "currentlistings":
 					Listing thisListing = new Listing();
@@ -318,27 +335,6 @@ public class DBMediator {
 					thisListing.setBookID(rs.getInt("bookid"));
 					thisListing.setQuantity(rs.getInt("quantity"));
 					results.add(thisListing);
-					Statement stmt2 = c.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
-					Book thisBook = new Book();
-					thisBook.setTitle(rs2.getString("title"));
-					thisBook.setAuthor(rs2.getString("author"));
-					thisBook.setYear(rs2.getInt("pubyear"));
-					System.out.println("here");
-					thisBook.setCondition(rs.getString("condition"));
-					thisBook.setCategory(rs.getString("category"));
-					thisBook.setValue(rs.getInt("value"));
-					results.add(thisBook);
-					rs2.close();
-					stmt2.close();
-					break;
-				case "users":
-					/*
-					User thisUser = new User();
-			        thisUser.setUserID(rs.getInt("userid"));
-			        thisUser.setUsername(rs.getString("username"));
-			        thisUser.setStatus(rs.getString("status"));
-			        results.add(thisUser);*/
 					break;
 				case "executedlistings":
 					System.out.println("entering executedListing");
@@ -357,7 +353,31 @@ public class DBMediator {
 	    	  }
 	       }
 	       rs.close();
-	       stmt.close();
+	       
+	       //find and interleave books with associated listings (separated because only one query can run/be accessed at a time)
+	       int size = results.size();
+	       for (int i = 0; i < size; i++) {
+	    	   switch (table) {
+	    	   		case "currentlistings":
+	    	   			ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + ((Listing) results.get(2 * i)).getBookID() + "'");
+	    	   			Book thisBook = new Book();
+	    	   			thisBook.setTitle(rs2.getString("title"));
+	    	   			thisBook.setAuthor(rs2.getString("author"));
+	    	   			thisBook.setYear(rs2.getInt("pubyear"));
+	    	   			thisBook.setValue(rs.getInt("value"));
+	    	   			thisBook.setCategory(rs.getString("category"));
+	    	   			thisBook.setCondition(rs.getString("condition"));
+	    	   			results.add(2 * i + 1, thisBook);
+	    	   			rs2.close();
+	        	  		break;
+	        	  	case "executedlistings":
+	        	  		break;
+	        	  	default:
+						System.out.println("Invalid Column Query");
+						return null;
+	    	   }
+	       }
+
 	       c.close();
 	       System.out.println(results.size());
 	       return results;

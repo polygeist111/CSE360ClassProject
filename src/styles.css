@@ -16,3 +16,8 @@
 .list-view .list-cell:odd {
     -fx-background-color: #E4E4E4;
 }
+
+.list-view .list-cell:selected {
+   -fx-background-color: blue;
+ }
+ 

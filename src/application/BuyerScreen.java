@@ -1,6 +1,9 @@
 package application;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Scene; 
@@ -22,6 +25,10 @@ public class BuyerScreen extends Screen {
 	private String category = "Other";
 	private HBox categorySelect;
 	private GridPane browseColumns;
+	private Label currentSelection;
+	
+	//holds listingID of current selection for cart
+	private int selectedListing = -1;
 	
 	BuyerScreen () {
 		assembleHeader();
@@ -115,6 +122,10 @@ public class BuyerScreen extends Screen {
 		deselectTip.setTextAlignment(TextAlignment.CENTER);
 		deselBox.getChildren().add(deselectTip);
 		deselBox.getChildren().add(createSpacer());
+		currentSelection = new Label("");
+		currentSelection.setTextAlignment(TextAlignment.CENTER);
+		deselBox.getChildren().add(currentSelection);
+		deselBox.getChildren().add(createSpacer());
 		buyerGrid.add(deselBox, 0, 2);
 		
 		content.add(buyerGrid, 0, 0);
@@ -164,11 +175,56 @@ public class BuyerScreen extends Screen {
 	
 	//queries db for category results and updates screen
 	private void browseCategory() {
+		ArrayList<ListView<HBox>> buyColumns = new ArrayList<>();
 		ListView<HBox> ulnColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Used Like New", category), "Used Like New: ");
+		buyColumns.add(ulnColumn);
 		browseColumns.add(ulnColumn, 0, 0);
 		ListView<HBox> muColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Moderately Used", category), "Moderately Used: ");
+		buyColumns.add(muColumn);
 		browseColumns.add(muColumn, 1, 0);
 		ListView<HBox> huColumn = createBookColumn(DBMediator.queryListings("currentlistings", "Heavily Used", category), "Heavily Used: ");
+		buyColumns.add(huColumn);
 		browseColumns.add(huColumn, 2, 0);
+		
+		//special selection handling
+		for (ListView<HBox> child : buyColumns) {
+			child.getSelectionModel().selectedItemProperty().addListener(
+				new ChangeListener<HBox>() {
+			    	public void changed(ObservableValue<? extends HBox> ov, HBox old_val, HBox new_val) {
+			        	System.out.println("selection made");
+			        	//ensure header cannot be clicked
+			        	if (child.getSelectionModel().getSelectedIndex() == 0) {
+			        		Platform.runLater(() -> child.getSelectionModel().clearSelection() );
+			            } else {
+			            	for (ListView<HBox> child : buyColumns) {
+			            		if (child.getSelectionModel().getSelectedItem() != new_val) {
+			            			System.out.println("clearing selection");
+			            			//child.getSelectionModel().clearSelection();
+			            			//child.getSelectionModel().
+			            			Platform.runLater(() -> child.getSelectionModel().clearSelection() );
+			            		} else {
+			            			System.out.println("Updating Selection Info");
+			            			String title = "";
+			            			String condition = "";
+			            			int listingID = 0;
+			            			for (Node hboxChild : new_val.getChildren()) {
+			            				if (hboxChild instanceof GridPane) {
+			            					for (Node gridChild : ((GridPane) hboxChild).getChildren()) {
+			            						if (gridChild instanceof Label) {
+			            							System.out.println(((Label) gridChild).getText());
+			            						}
+			            					}
+			            				}
+			            			}
+			            			
+			            			currentSelection.setText(title + " (" + condition + ")");
+			            		}
+			            	}
+			            }
+			        }
+			    }
+			);
+		}
+		
 	}
 }
