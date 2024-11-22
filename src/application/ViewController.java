@@ -56,7 +56,7 @@ public class ViewController extends Application{
 	public static void goHome() {
 		System.out.println("going home");
 		//CODE: add check for general user authentication
-		if (clearScreen("Home") && screens.get("Home") != null) {
+		if (clearScreen("Home", null) && screens.get("Home") != null) {
 			stage.setScene(screens.get("Home").screen);
 		} else {
 			System.out.println("No home screen");
@@ -64,9 +64,9 @@ public class ViewController extends Application{
 	}
 	
 	//if user is signed in as general user and in home screen or cart screen, moves to buying screen
-	public static void goShopping() {
+	public static void goShopping(Map<Integer, HBox> cartList) {
 		System.out.println("going to buy screen");
-		if (clearScreen("Buy") && screens.get("Buy") != null) {
+		if (clearScreen("Buy", cartList) && screens.get("Buy") != null) {
 			stage.setScene(screens.get("Buy").screen);
 		} else {
 			System.out.println("No buy screen");
@@ -74,9 +74,9 @@ public class ViewController extends Application{
 	}
 	
 	//if user is signed in as general user and in buying screen, moves to cart screen
-	public static void goCart() {
+	public static void goCart(Map<Integer, HBox> cartList) {
 		System.out.println("going to cart");
-		if (clearScreen("Cart") && screens.get("Cart") != null) {
+		if (clearScreen("Cart", cartList) && screens.get("Cart") != null) {
 			stage.setScene(screens.get("Cart").screen);
 		} else {
 			System.out.println("No cart screen");
@@ -86,7 +86,7 @@ public class ViewController extends Application{
 	//if user is signed in as general user and in home screen, moves to selling screen
 	public static void goSelling() {
 		System.out.println("going to sell screen");
-		if (clearScreen("Sell") && screens.get("Sell") != null) {
+		if (clearScreen("Sell", null) && screens.get("Sell") != null) {
 			stage.setScene(screens.get("Sell").screen);
 		}
 		else {
@@ -97,7 +97,7 @@ public class ViewController extends Application{
 	//if user is signed in as general user and in home screen, moves to profile screen
 	public static void goProfile() {
 		System.out.println("going to profile screen");
-		if (clearScreen("Profile") && screens.get("Profile") != null) {
+		if (clearScreen("Profile", null) && screens.get("Profile") != null) {
 			stage.setScene(screens.get("Profile").screen);
 		} else {
 			System.out.println("No profile screen");
@@ -108,7 +108,7 @@ public class ViewController extends Application{
 	public static void signOut() {
 		System.out.println("signing out");
 		//CODE: add check for user authentication
-		if (clearScreen("Login") && screens.get("Login") != null) {
+		if (clearScreen("Login", null) && screens.get("Login") != null) {
 			currentUser = null;
 			stage.setScene(screens.get("Login").screen);
 		} else {
@@ -117,7 +117,7 @@ public class ViewController extends Application{
 	}
 	
 	//clear + regenerate exited screen
-	public static boolean clearScreen(String caller) {
+	public static boolean clearScreen(String caller, Map<Integer, HBox> cartList) {
 		Screen newScreen = null;
 		switch (caller) {
 			case "Login":
@@ -127,10 +127,14 @@ public class ViewController extends Application{
 				newScreen = new HomeScreen();
 				break;
 			case "Buy":
-				newScreen = new BuyerScreen();
+				if (cartList != null) {
+					newScreen = new BuyerScreen(cartList);
+				} else {
+					newScreen = new BuyerScreen(null);
+				}
 				break;
 			case "Cart":
-				//newScreen = new CartScreen();
+				newScreen = new CartScreen(cartList);
 				break;
 			case "Sell":
 				newScreen = new SellerScreen();

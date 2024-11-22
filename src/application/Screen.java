@@ -1,6 +1,7 @@
 package application;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -131,20 +132,6 @@ public abstract class Screen {
         return homeBut;
 	}
 	
-	//returns button that will return regular user from cart to buy screen
-	protected Button createReturnShoppingButton() {
-		System.out.println("Creating Return Shopping Button");
-		
-		Button shopBut = new Button("Return to Shopping");
-		shopBut.setOnAction(event -> {
-			ViewController.goShopping();
-		});
-			
-		
-		
-		return shopBut;
-	}
-	
 	//returns button that will return any user to login page, signed out
 	protected Button createSignOutButton() {
 		System.out.println("Creating Sign Out Button");
@@ -153,7 +140,6 @@ public abstract class Screen {
 		signoutBut.setOnAction(event -> {
 			ViewController.signOut();
 		});
-		
 		
 		return signoutBut;
 	}
@@ -172,8 +158,29 @@ public abstract class Screen {
 		
 		return viewCartBut;
 	}*/
-	protected void goToCart() {
-		ViewController.goCart();
+	
+	/*
+	//returns button that will return regular user from cart to buy screen
+		protected Button createReturnShoppingButton() {
+			System.out.println("Creating Return Shopping Button");
+			
+			Button shopBut = new Button("Return to Shopping");
+			shopBut.setOnAction(event -> {
+				ViewController.goShopping();
+			});
+				
+			
+			
+			return shopBut;
+		}
+	*/
+		
+	protected void goToCart(Map<Integer, HBox> cartList) {
+		ViewController.goCart(cartList);
+	}
+	
+	protected void returnShopping(Map<Integer, HBox> cartList) {
+		ViewController.goShopping(cartList);
 	}
 	
 	//takes in label name, file name, event name and will return vbox containing icon button and label
@@ -192,7 +199,7 @@ public abstract class Screen {
 		boxButton.setOnAction(event -> {
 			switch (eventType) {
 				case "Buy":
-					ViewController.goShopping();
+					ViewController.goShopping(null);
 					break;
 				case "Sell":
 					ViewController.goSelling();
@@ -244,9 +251,19 @@ public abstract class Screen {
 			
 			//optional handling of cart status
 			if (cartMap != null) {
+				ArrayList<Integer> stillPresent = new ArrayList<>();
 				if (cartMap.containsKey(listing.getListingID())) {
-					rowEntry.getStyleClass().add("selectedListing");					
+					rowEntry.getStyleClass().add("selectedListing");
+					//stillPresent.add(listing.getListingID());
 				}
+				/*
+				 //first attempt at handling concurrency issues with reloading page and missing cart products
+				cartMap.forEach((key, value) -> {
+					if (!stillPresent.contains(key) ) {
+						System.out.println(key + "no longer present");
+						Platform.runLater(() -> cartMap.remove(key) );
+					}
+				});*/
 			}
 			
 			

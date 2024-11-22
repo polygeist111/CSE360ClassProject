@@ -31,7 +31,10 @@ public class BuyerScreen extends Screen {
 	private HBox selectedListing;
 	private Map<Integer, HBox> cartedListings = new HashMap<Integer, HBox>();
 	
-	BuyerScreen () {
+	BuyerScreen (Map<Integer, HBox> cartList) {
+		if (cartList != null) {
+			cartedListings = cartList;
+		}
 		assembleHeader();
 		assembleContent();
 		toggleSelection();
@@ -168,8 +171,9 @@ public class BuyerScreen extends Screen {
 		Button cartButton = new Button("View Cart");
 		cartButton.setOnAction(event -> {
 			cartedListings.forEach((key, value) -> {
-				System.out.println("ListingID: " + key + " TItle: " + ((Label) value.getChildren().get(0)).getText());
+				System.out.println("ListingID: " + key + " Title: " + ((Label) value.getChildren().get(0)).getText());
 			});
+			goToCart(cartedListings);
 		});
 		footer.getChildren().add(cartButton);
 		
@@ -230,6 +234,7 @@ public class BuyerScreen extends Screen {
 			        	System.out.println("selection made");
 			        	addToCart.setDisable(true);
 			        	removeFromCart.setDisable(true);
+			        	currentSelection.setText("No listing selected");
 			        	//ensure header cannot be clicked
 			        	if (child.getSelectionModel().getSelectedIndex() == 0) {
 			        		Platform.runLater(() -> child.getSelectionModel().clearSelection() );
