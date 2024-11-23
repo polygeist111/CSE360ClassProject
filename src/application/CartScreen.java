@@ -22,7 +22,6 @@ public class CartScreen extends Screen {
 	//meant to reference currently selected HBox in ListView<HBox>
 		//see BuyerScreen for complete ListView implementation
 	private HBox selectedListing;
-	private GridPane browseCart;
 	
 	CartScreen (Map<Integer, HBox> cartList) {
 		cartContents = cartList;
@@ -50,14 +49,16 @@ public class CartScreen extends Screen {
 		cartGrid.setVgap(15);
 		cartGrid.setHgap(15);
 		
-		
 		ArrayList<String> colTitles = new ArrayList<>();
-		colTitles.add("Title");
 		colTitles.add("Price per Unit");
 		colTitles.add("Quantity");
 		colTitles.add("Price");
 		ListView<HBox> cartColumn = createCartColumn(null, colTitles,  cartContents);
 		cartGrid.add(cartColumn, 0, 1);
+		
+		Label total = new Label("Total: ");
+		cartGrid.add(total, 0, 2);
+		
 		content.add(cartGrid, 0, 0);
 		// Cart view end
 		
@@ -65,7 +66,7 @@ public class CartScreen extends Screen {
 	}
 
 	protected void assembleFooter() {
-HBox footer = createFooter();
+		HBox footer = createFooter();
 		
 		footer.setPadding(new Insets(0, 0, 0, 15));
 		footer.setSpacing(15);
@@ -80,7 +81,7 @@ HBox footer = createFooter();
 		});
 		footer.getChildren().add(removeFromCart);
 		
-		clearCart = new Button("Add to Cart");
+		clearCart = new Button("Clear Cart");
 		clearCart.setDisable(true);
 		clearCart.setOnAction(event -> {
 			System.out.println("clearing cart");
@@ -115,4 +116,5 @@ HBox footer = createFooter();
 		root.add(footer, 0, 2);
 	}
 
+	
 }
