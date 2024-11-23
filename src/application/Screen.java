@@ -318,6 +318,29 @@ public abstract class Screen {
 		return result;
 	}
 	
+	// Create cart ListView column
+	protected ListView<HBox> createCartColumn(ArrayList<Object> booksIn, ArrayList<String> colTitles, Map<Integer, HBox> cartMap) {
+		ObservableList<HBox> resultItems = FXCollections.observableArrayList();
+		ListView<HBox> result = new ListView<HBox>();
+		result.setItems(resultItems);
+		
+		HBox header = new HBox();
+		for (String child : colTitles) {
+			Label childTitle = new Label(child);
+			childTitle.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+			header.getChildren().add(childTitle);
+			header.getChildren().add(createSpacer());
+			header.getChildren().add(new Label(""));
+		}
+		resultItems.add(header);
+		
+		int totalEntries = 0;
+		
+		
+		return result;
+		
+	}
+	
 	protected abstract void assembleHeader();
 	
 	protected abstract void assembleContent();
