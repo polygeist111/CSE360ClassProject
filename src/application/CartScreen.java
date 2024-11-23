@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -21,6 +22,7 @@ public class CartScreen extends Screen {
 	//meant to reference currently selected HBox in ListView<HBox>
 		//see BuyerScreen for complete ListView implementation
 	private HBox selectedListing;
+	private GridPane browseCart;
 	
 	CartScreen (Map<Integer, HBox> cartList) {
 		cartContents = cartList;
@@ -41,7 +43,24 @@ public class CartScreen extends Screen {
 
 	protected void assembleContent() {
 		GridPane content = createContentWindow();
-
+		
+		// Cart view start
+		//create grid holding Cart list and Total
+		GridPane cartGrid = new GridPane();
+		cartGrid.setVgap(15);
+		cartGrid.setHgap(15);
+		
+		
+		ArrayList<String> colTitles = new ArrayList<>();
+		colTitles.add("Title");
+		colTitles.add("Price per Unit");
+		colTitles.add("Quantity");
+		colTitles.add("Price");
+		ListView<HBox> cartColumn = createCartColumn(null, colTitles,  cartContents);
+		cartGrid.add(cartColumn, 0, 1);
+		content.add(cartGrid, 0, 0);
+		// Cart view end
+		
 		root.add(content, 0, 1);
 	}
 
