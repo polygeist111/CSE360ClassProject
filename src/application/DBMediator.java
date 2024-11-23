@@ -394,51 +394,144 @@ public class DBMediator {
 	}
 	
 	//generic function to return all entries in table WHERE column = searchTerm
-		public static ArrayList<Object> queryCurrentListings(String column, String searchTerm) {
-			ArrayList<Object> results = new ArrayList<>();
-			c = null;
-		    try {
-		       Class.forName("org.sqlite.JDBC");
-		       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
-		       Statement stmt = c.createStatement();
+	public static ArrayList<Object> queryCurrentListings(String column, String searchTerm) {
+		ArrayList<Object> results = new ArrayList<>();
+		Connection c = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+			stmt = c.createStatement();
 	
-		       //String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books." + column + "='" + searchTerm + "'";
-		       String sql = "SELECT currentlistings.* FROM currentlistings, books";// WHERE " + table + ".bookid = books.bookid";
-		       System.out.println(sql);
-		       ResultSet rs = stmt.executeQuery(sql);
-		       while ( rs.next() ) {
-		    	    System.out.println("checking listing entry");
-		    	    System.out.println("entering currentListing");
-					Listing thisListing = new Listing();
-					thisListing.setListingID(rs.getInt("listingid"));
-					thisListing.setSellerID(rs.getInt("sellerid"));
-					thisListing.setBookID(rs.getInt("bookid"));
-					thisListing.setQuantity(rs.getInt("quantity"));
-					results.add(thisListing);
-					System.out.println("passed listing");
-					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
-					Book thisBook = new Book();
-					thisBook.setTitle(rs2.getString("title"));
-					thisBook.setAuthor(rs2.getString("author"));
-					thisBook.setYear(rs2.getInt("pubyear"));
-					thisBook.setValue(rs.getInt("value"));
-					thisBook.setCategory(rs.getString("category"));
-					thisBook.setCondition(rs.getString("condition"));
-					results.add(thisBook);
-					rs2.close();
-		       }
-		       rs.close();
-		       stmt.close();
-		       c.close();
-		       System.out.println(results.size());
-		       return results;
-		    } catch ( Exception e ) {
-		       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-		       System.exit(0);
-		    }
-		    System.out.println("Improper escape from queryColumn");
+			// Modified query to properly join tables and get book information
+			String sql = "SELECT cl.*, b.* FROM currentListings cl " +
+						"INNER JOIN books b ON cl.bookid = b.bookid ";
+			
+			if (column != null && searchTerm != null) {
+				sql += "WHERE cl." + column + " = '" + searchTerm + "'";
+			}
+			
+			System.out.println("Executing query: " + sql);
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next()) {
+				// Create and populate Listing object
+				Listing thisListing = new Listing();
+				thisListing.setListingID(rs.getInt("listingid"));
+				thisListing.setSellerID(rs.getInt("sellerid"));
+				thisListing.setBookID(rs.getInt("bookid"));
+				thisListing.setQuantity(rs.getInt("quantity"));
+				
+				// Create and populate Book object
+				Book thisBook = new Book();
+				thisBook.setBookID(rs.getInt("bookid"));
+				thisBook.setTitle(rs.getString("title"));
+				thisBook.setAuthor(rs.getString("author"));
+				thisBook.setYear(rs.getInt("pubyear"));
+				thisBook.setValue(rs.getInt("value"));
+				thisBook.setCategory(rs.getString("category"));
+				thisBook.setCondition(rs.getString("condition"));
+				
+				System.out.println("Found listing: " + thisListing.getListingID() + 
+								 " for book: " + thisBook.getTitle());
+				
+				results.add(thisListing);
+				results.add(thisBook);
+			}
+			
+			return results;
+			
+		} catch (Exception e) {
+			System.out.println("Error in queryCurrentListings:");
+			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+				if (c != null) c.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+
+public static ArrayList<Object> getProfileListings(int userId) {
+    ArrayList<Object> results = new ArrayList<>();
+    Connection c = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    
+    try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+        stmt = c.createStatement();
+
+        // Query with explicitly named columns
+        String sql = "SELECT " +
+                    "cl.listingid, " +
+                    "cl.sellerid, " +
+                    "cl.quantity, " +
+                    "b.bookid, " +
+                    "b.title, " +
+                    "b.author, " +
+                    "b.pubyear, " +
+                    "b.category, " +
+                    "b.condition, " +
+                    "b.value " +
+                    "FROM currentListings cl " +
+                    "INNER JOIN books b ON cl.bookid = b.bookid " +
+                    "WHERE cl.sellerid = " + userId;
+        
+        System.out.println("Executing profile listings query: " + sql);
+        rs = stmt.executeQuery(sql);
+        
+        while (rs.next()) {
+            try {
+                Listing thisListing = new Listing();
+                thisListing.setListingID(rs.getInt("listingid"));
+                thisListing.setSellerID(rs.getInt("sellerid"));
+                thisListing.setBookID(rs.getInt("bookid"));
+                thisListing.setQuantity(rs.getInt("quantity"));
+                
+                Book thisBook = new Book();
+                thisBook.setBookID(rs.getInt("bookid"));
+                thisBook.setTitle(rs.getString("title"));
+                thisBook.setAuthor(rs.getString("author"));
+                thisBook.setYear(rs.getInt("pubyear"));
+                thisBook.setValue(rs.getInt("value"));
+                thisBook.setCategory(rs.getString("category"));
+                thisBook.setCondition(rs.getString("condition"));
+                
+                System.out.println("Found: " + thisBook.getTitle() + " - Quantity: " + thisListing.getQuantity());
+                
+                results.add(thisListing);
+                results.add(thisBook);
+            } catch (Exception e) {
+                System.out.println("Error processing row: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
+        return results;
+        
+    } catch (Exception e) {
+        System.out.println("Database error: " + e.getMessage());
+        e.printStackTrace();
+        return null;
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (c != null) c.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
 }
 
 /*
