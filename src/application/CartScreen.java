@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class CartScreen extends Screen {
 	private Map<Integer, HBox> cartContents;
@@ -27,6 +28,8 @@ public class CartScreen extends Screen {
 	private GridPane selectedListing;
 	private Label total;
 	private Label tax;
+	private GridPane cartGrid;
+	private GridPane content;
 	private double taxModifier = 1.07;
 
 	
@@ -48,11 +51,11 @@ public class CartScreen extends Screen {
 	}
 
 	protected void assembleContent() {
-		GridPane content = createContentWindow();
+		content = createContentWindow();
 		
 		// Cart view start
 		//create grid holding Cart list and Total
-		GridPane cartGrid = new GridPane();
+		cartGrid = new GridPane();
 		cartGrid.setVgap(15);
 		cartGrid.setHgap(15);
 		
@@ -120,18 +123,64 @@ public class CartScreen extends Screen {
 		
 		Button checkoutButton = new Button("Check Out");
 		checkoutButton.setOnAction(event -> {
-			for (Map.Entry<Integer, HBox> entry : cartContents.entrySet()) {
-			}
-			int listingCount =  cartListings.getItems().size();
+			//create confirmation screen
+			cartGrid.setVisible(false);
+			cartGrid.setManaged(false);
+			content.setVgap(5);
+			content.setAlignment(Pos.CENTER);
+			
+			//handle db processing of listings
+			int listingCount = cartListings.getItems().size();
+			int totalQuantity = 0;
 			for (int i = 1; i < listingCount; i++) {
+				//db processing
 				int listingID = Integer.parseInt(((Label) ((GridPane) cartListings.getItems().get(i)).getChildren().get(1)).getText());
+				String title =	((Label) ((HBox) ((GridPane) cartListings.getItems().get(0)).getChildren().get(3)).getChildren().get(1)).getText();
 				int quantity =	Integer.parseInt(((TextField) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(3)).getChildren().get(1)).getText());
 				Double baseValue =	Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
 				baseValue *= 100;
 				baseValue *= taxModifier;
 				int cents = baseValue.intValue();
-				DBMediator.executeListing(listingID, ViewController.currentUser.getUserID(), quantity, cents);				
+				totalQuantity += quantity;
+				DBMediator.executeListing(listingID, ViewController.currentUser.getUserID(), quantity, cents);		
+				//confirm page
+				Label completionLabel = new Label(String.format("%s copies of %s have been purchased at $%.2f each", quantity, title, baseValue / 100));
+				completionLabel.setTextAlignment(TextAlignment.CENTER);
+				HBox completionLabelBox = new HBox(createSpacer());
+				completionLabelBox.getChildren().add(completionLabel);
+				completionLabelBox.getChildren().add(createSpacer());
+				content.add(completionLabelBox, 0, i - 1);
 			}
+			Label totalLabel = new Label("Your order includes " + totalQuantity + " books for a total price of " + total.getText().substring(13) + "\n\nYou can continue shopping, or sign out or return to the homescreen\nwith the buttons in the top toolbar");
+			totalLabel.setTextAlignment(TextAlignment.CENTER);
+			HBox totalLabelBox = new HBox(createSpacer());
+			totalLabelBox.getChildren().add(totalLabel);
+			totalLabelBox.getChildren().add(createSpacer());
+			content.add(totalLabelBox, 0, cartListings.getItems().size() - 1);
+			
+			Button shoppingButton = new Button("Return to Shopping");
+			shoppingButton.setOnAction(event1 -> {
+				cartContents.forEach((key, value) -> {
+					System.out.println("ListingID: " + key + " Title: " + ((Label) value.getChildren().get(0)).getText());
+				});
+				returnShopping(cartContents);
+			});
+			HBox shoppingButtonBox = new HBox(createSpacer());
+			shoppingButtonBox.getChildren().add(shoppingButton);
+			shoppingButtonBox.getChildren().add(createSpacer());
+			content.add(shoppingButtonBox, 0, cartListings.getItems().size());
+			
+			//fix footer
+			footer.getChildren().clear();
+			Text credit = new Text("Made by CSE 360 Group 16");
+			credit.setFont(Font.font("Verdana", FontWeight.NORMAL, 10));
+			HBox creditFrame = new HBox(credit);
+			creditFrame.setPadding(new Insets(5));
+			creditFrame.setAlignment(Pos.BOTTOM_RIGHT);
+			footer.getChildren().add(createSpacer());
+			footer.getChildren().add(creditFrame);
+			
+			
 			clearCart();
 		});
 		footer.getChildren().add(checkoutButton);
