@@ -28,20 +28,12 @@ public class ProfileScreen extends Screen {
 
     @Override
     protected void assembleHeader() {
-        HBox header = createHeader();
-        root.add(header, 0, 0);
-
-        HBox titleBox = new HBox(10);
-        titleBox.setAlignment(Pos.CENTER);
-        titleBox.setPadding(new Insets(0, 30, 0, 30));
-
-        Label title = createTitle("User Profile");
-        Region spacer = createSpacer();
-        Button homeButton = createReturnHomeButton();
-        Button signOutButton = createSignOutButton();
-
-        titleBox.getChildren().addAll(title, spacer, homeButton, signOutButton);
-        root.add(titleBox, 0, 0);
+    	HBox header = createHeader();
+		header.getChildren().add(createReturnHomeButton());
+		header.getChildren().add(createSpacer());
+		header.getChildren().add(createSignOutButton());
+		root.add(header, 0, 0);
+		root.add(createTitle(ViewController.currentUser.getUsername() + "'s Profile"), 0, 0);
     }
 
     @Override

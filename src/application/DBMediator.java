@@ -56,24 +56,47 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 2, "C", "Tucker Wood", 2024, "Computer", "Used Like New", 2676);
+	       createListing(2, 5, "C++", "Tucker Wood", 2023, "Computer", "Used Like New", 3276);
+	       createListing(1, 1, "C#", "Tucker Wood", 2017, "Computer", "Used Like New", 2999);
+	       createListing(1, 3, "Java", "Tucker Wood", 2024, "Computer", "Moderately Used", 3000);
+	       createListing(2, 2, "JavaScript", "Tucker Wood", 2021, "Computer", "Moderately Used", 5999);
+	       createListing(1, 5, "Swift", "Tucker Wood", 2005, "Computer", "Heavily Used", 2347);
+	       createListing(2, 1, "MaxMSP", "Tucker Wood", 2022, "Computer", "Heavily Used", 2000);
 	       
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
+	       createListing(2, 2, "Hamlet", "Tucker Wood", 2024, "English Language", "Used Like New", 2676);
+	       createListing(1, 5, "Romeo and Juliet", "Tucker Wood", 2023, "English Language", "Used Like New", 3276);
+	       createListing(1, 1, "Othello", "Tucker Wood", 2017, "English Language", "Used Like New", 2999);
+	       createListing(2, 3, "Macbeth", "Tucker Wood", 2024, "English Language", "Moderately Used", 3000);
+	       createListing(1, 2, "Midsummer Nights Dream", "Tucker Wood", 2021, "English Language", "Moderately Used", 5999);
+	       createListing(1, 5, "King Lear", "Tucker Wood", 2005, "English Language", "Heavily Used", 2347);
+	       createListing(2, 1, "Julius Caesar", "Tucker Wood", 2022, "English Language", "Heavily Used", 2000);
 	       
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
+	       createListing(2, 2, "Algebra", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	       createListing(1, 5, "Geometry", "Tucker Wood", 2023, "Math", "Used Like New", 3276);
+	       createListing(2, 1, "Trig", "Tucker Wood", 2017, "Math", "Used Like New", 2999);
+	       createListing(2, 3, "Calculus 3", "Tucker Wood", 2024, "Math", "Moderately Used", 3000);
+	       createListing(1, 2, "Algebra", "Tucker Wood", 2021, "Math", "Moderately Used", 5999);
+	       createListing(2, 5, "Discrete", "Tucker Wood", 2005, "Math", "Heavily Used", 2347);
+	       createListing(1, 1, "Calculus", "Tucker Wood", 2022, "Math", "Heavily Used", 2000);
+	       
+	       createListing(1, 2, "Biology", "Tucker Wood", 2024, "Natural Science", "Used Like New", 2676);
+	       createListing(1, 5, "Geology", "Tucker Wood", 2023, "Natural Science", "Used Like New", 3276);
+	       createListing(2, 1, "Chem 1", "Tucker Wood", 2017, "Natural Science", "Used Like New", 2999);
+	       createListing(1, 3, "Chem 2", "Tucker Wood", 2024, "Natural Science", "Moderately Used", 3000);
+	       createListing(1, 2, "Glaceology", "Tucker Wood", 2021, "Natural Science", "Moderately Used", 5999);
+	       createListing(2, 5, "Botany", "Tucker Wood", 2005, "Natural Science", "Heavily Used", 2347);
+	       createListing(1, 1, "Marine Biology", "Tucker Wood", 2022, "Natural Science", "Heavily Used", 2000);
+	       
+	       createListing(1, 2, "History of Underwater Basket Weaving", "Tucker Wood", 2024, "Other", "Used Like New", 2676);
+	       createListing(2, 5, "Politics of the American Southwest", "Tucker Wood", 2023, "Other", "Used Like New", 3276);
+	       createListing(2, 1, "Understanding Wood", "Tucker Wood", 2017, "Other", "Used Like New", 2999);
+	       createListing(1, 3, "Architectural Daylighting", "Tucker Wood", 2024, "Other", "Moderately Used", 3000);
+	       createListing(1, 2, "The Odyssey", "Tucker Wood", 2021, "Other", "Moderately Used", 5999);
+	       createListing(2, 5, "The Illiad", "Tucker Wood", 2005, "Other", "Heavily Used", 2347);
+	       createListing(1, 1, "On Tyranny", "Tucker Wood", 2022, "Other", "Heavily Used", 2000);
+	       
+	       
 
 
 	       
