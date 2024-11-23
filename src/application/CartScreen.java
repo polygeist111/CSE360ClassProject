@@ -75,7 +75,11 @@ public class CartScreen extends Screen {
 		removeFromCart.setDisable(true);
 		removeFromCart.setOnAction(event -> {
 			System.out.println("Removing selection from cart oncart page");
-			cartContents.remove(Integer.parseInt(((Label) selectedListing.getChildren().get(3)).getText()));
+			//cartContents.remove(Integer.parseInt(((Label) selectedListing.getChildren().get(3)).getText()));
+			cartContents.remove(Integer.parseInt(((Label) selectedListing.getChildren().get(1)).getText()));
+			cartListings.getItems().remove(selectedListing);
+			Platform.runLater(() -> cartListings.getSelectionModel().clearSelection() );
+			selectedListing = null;
 			//removeFromCart.setDisable(true);
 		});
 		footer.getChildren().add(removeFromCart);

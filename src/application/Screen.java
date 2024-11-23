@@ -392,7 +392,10 @@ public abstract class Screen {
 			
 			Label bookTitle = new Label(((Label) listing.getChildren().get(0)).getText());
 			bookRow.add(bookTitle, 0, 0, 2, 1);
-			bookRow.add(createSpacer(), 1, 0);
+			
+			Label hiddenID = new Label("" + listingID);
+			hiddenID.setVisible(false);
+			bookRow.add(hiddenID, 1, 0);
 			
 			HBox bookPPUBox = new HBox(createSpacer());
 			int price = Integer.parseInt(((Label) listing.getChildren().get(5)).getText());
