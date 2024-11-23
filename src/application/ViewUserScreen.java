@@ -1,4 +1,4 @@
-package application;
+/*package application;
 
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -195,3 +195,4 @@ public class ViewUserScreen extends Screen {
         userTable.setItems(data);
     }
 }
+*/

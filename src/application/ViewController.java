@@ -140,7 +140,7 @@ public class ViewController extends Application{
 				newScreen = new SellerScreen();
 				break;
 			case "Profile":
-				//newScreen = new ProfileScreen();
+				newScreen = new ProfileScreen();
 				break;
 			case "Admin":
 				//newScreen = new AdminScreen();

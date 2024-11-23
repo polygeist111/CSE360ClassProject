@@ -5,6 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import java.util.ArrayList;
 import java.sql.*;
@@ -12,13 +15,15 @@ import java.sql.*;
 public class ProfileScreen extends Screen {
     private ListView<String> listingsList;
     private ListView<String> purchasesList;
+	private GridPane historyColumns;
+    
 
     public ProfileScreen() {
         assembleHeader();
         assembleContent();
         assembleFooter();
         screen = new Scene(root);
-        loadUserActivity();
+        //loadUserActivity();
     }
 
     @Override
@@ -42,12 +47,13 @@ public class ProfileScreen extends Screen {
     @Override
     protected void assembleContent() {
         GridPane content = createContentWindow();
+        content.setVgap(20);
 
         VBox profileBox = new VBox(15);
         profileBox.setAlignment(Pos.TOP_CENTER);
         profileBox.setPadding(new Insets(20));
 
-        VBox userInfo = new VBox(10);
+        HBox userInfo = new HBox();
         userInfo.setAlignment(Pos.CENTER_LEFT);
 
         HBox usernameBox = new HBox(10);
@@ -71,7 +77,7 @@ public class ProfileScreen extends Screen {
                 String.valueOf(ViewController.currentUser.getUserID()) : "N/A");
         idBox.getChildren().addAll(idLabel, idValue);
 
-        userInfo.getChildren().addAll(usernameBox, statusBox, idBox);
+        userInfo.getChildren().addAll(createSpacer(), usernameBox, createSpacer(), statusBox, createSpacer(), idBox, createSpacer());
 
         VBox buttonsBox = new VBox(10);
         buttonsBox.setAlignment(Pos.CENTER);
@@ -101,8 +107,8 @@ public class ProfileScreen extends Screen {
             }
         });
 
-        buttonsBox.getChildren().addAll(changePasswordButton, refreshButton, debugButton);
-
+        //buttonsBox.getChildren().addAll(changePasswordButton, refreshButton, debugButton);
+        /*
         VBox activityBox = new VBox(10);
         activityBox.setAlignment(Pos.CENTER_LEFT);
         activityBox.setPadding(new Insets(20, 0, 0, 0));
@@ -127,7 +133,16 @@ public class ProfileScreen extends Screen {
 
         profileBox.getChildren().addAll(userInfo, buttonsBox, activityBox);
 
-        content.add(profileBox, 0, 0);
+        content.add(profileBox, 0, 0);*/
+        
+        historyColumns = new GridPane();
+		historyColumns.setHgap(30);
+		browseCategory();
+		
+		
+		;
+		content.add(userInfo, 0, 0);
+		content.add(historyColumns, 0, 1);
         root.add(content, 0, 1);
     }
 
@@ -249,4 +264,31 @@ public class ProfileScreen extends Screen {
         alert.setContentText(content);
         alert.showAndWait();
     }
+    
+  //queries db for category results and updates screen
+  	private void browseCategory() {
+  		int userID = ViewController.currentUser.getUserID();
+  		ArrayList<ListView<HBox>> buyColumns = new ArrayList<>();
+  		ListView<HBox> ulnColumn = createBookColumn(DBMediator.queryListingsForUser("executedlistings", "buyerid", userID), "Bought: ", null);
+  		buyColumns.add(ulnColumn);
+  		historyColumns.add(ulnColumn, 0, 0);
+  		ListView<HBox> muColumn = createBookColumn(DBMediator.queryListingsForUser("executedlistings", "sellerid", userID), "Sold: ", null);
+  		buyColumns.add(muColumn);
+  		historyColumns.add(muColumn, 1, 0);
+  		ListView<HBox> huColumn = createBookColumn(DBMediator.queryListingsForUser("currentlistings", "sellerid", userID), "Listed: ", null);
+  		buyColumns.add(huColumn);
+  		historyColumns.add(huColumn, 2, 0);
+  		
+  		//special selection handling
+  		for (ListView<HBox> child : buyColumns) {
+  			child.getSelectionModel().selectedItemProperty().addListener(
+  				new ChangeListener<HBox>() {
+  			    	public void changed(ObservableValue<? extends HBox> ov, HBox old_val, HBox new_val) {
+  			    		Platform.runLater(() -> child.getSelectionModel().clearSelection() );
+  			        }
+  			    }
+  			);
+  		}
+  		
+  	}
 }
