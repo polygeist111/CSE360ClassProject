@@ -235,6 +235,11 @@ public abstract class Screen {
 		
 		int totalEntries = 0;
 		for (int i = 0; i < booksIn.size(); i += 2) {
+			System.out.println("op 1");
+			System.out.println(booksIn.get(i));
+			System.out.println("op 1");
+			System.out.println(booksIn.get(i+1));
+
 			Listing listing = (Listing) booksIn.get(i);
 			Book book = (Book) booksIn.get(i + 1);
 			int thisQuantity = listing.getQuantity();

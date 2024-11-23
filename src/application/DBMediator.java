@@ -24,7 +24,7 @@ public class DBMediator {
 	       stmt.executeUpdate(sql);*/
 	       
 	       //create books table
-	       stmt.executeUpdate("DROP TABLE IF EXISTS books");
+	       //stmt.executeUpdate("DROP TABLE IF EXISTS books");
 	       String sql = "CREATE TABLE IF NOT EXISTS books" +
                    "(bookid INTEGER PRIMARY KEY     AUTOINCREMENT," +
                    " title              TEXT    NOT NULL, " + 
@@ -36,18 +36,18 @@ public class DBMediator {
 	       stmt.executeUpdate(sql);
 	       
 	       //create users table
-	       stmt.executeUpdate("DROP TABLE IF EXISTS users");
+	       //stmt.executeUpdate("DROP TABLE IF EXISTS users");
 	       sql = "CREATE TABLE IF NOT EXISTS users" +
                    "(userid INTEGER PRIMARY KEY     AUTOINCREMENT," +
                    " username           TEXT    NOT NULL, " + 
                    " password           TEXT    NOT NULL, " + 
                    " status           	TEXT    NOT NULL)"; 
-	       stmt.executeUpdate(sql);
+	       //stmt.executeUpdate(sql);
 	       createUser("admin", "admin");
 	       createUser("reguser", "reguser");
 	       
 	       //create currentListings table
-	       stmt.executeUpdate("DROP TABLE IF EXISTS currentListings");
+	       //stmt.executeUpdate("DROP TABLE IF EXISTS currentListings");
 	       sql = "CREATE TABLE IF NOT EXISTS currentListings" +
                    "(listingid INTEGER PRIMARY KEY     AUTOINCREMENT," +
                    " sellerid              INT     NOT NULL, " + 
@@ -56,29 +56,14 @@ public class DBMediator {
                    " FOREIGN KEY (sellerid) REFERENCES users (userid)," +
                    " FOREIGN KEY (bookid)   REFERENCES books (bookid))";
 	       stmt.executeUpdate(sql);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 2, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 5, "Test Title 2", "Tucker Wood", 2023, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	      
 	       
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Moderately Used", 2676);
 	       
-	       createListing(1, 1, "Test Title 3", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
-	       createListing(1, 1, "Test Title 1", "Tucker Wood", 2024, "Math", "Heavily Used", 2676);
 
 
 	       
 	       //create executedListings table
-	       stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
+	       //stmt.executeUpdate("DROP TABLE IF EXISTS executedListings");
 	       sql = "CREATE TABLE IF NOT EXISTS executedListings" +
                    "(listingid INTEGER PRIMARY KEY     AUTOINCREMENT," +
                    " sellerid              INT     NOT NULL, " + 
@@ -182,6 +167,45 @@ public class DBMediator {
 	    	   String status = "";
 	    	   if (username == "admin") {
 	    		   status = "Admin";
+	    		   createListing(1, 2, "C", "Tucker Wood", 2024, "Computer", "Used Like New", 2676);
+	    	       createListing(2, 5, "C++", "Tucker Wood", 2023, "Computer", "Used Like New", 3276);
+	    	       createListing(1, 1, "C#", "Tucker Wood", 2017, "Computer", "Used Like New", 2999);
+	    	       createListing(1, 3, "Java", "Tucker Wood", 2024, "Computer", "Moderately Used", 3000);
+	    	       createListing(2, 2, "JavaScript", "Tucker Wood", 2021, "Computer", "Moderately Used", 5999);
+	    	       createListing(1, 5, "Swift", "Tucker Wood", 2005, "Computer", "Heavily Used", 2347);
+	    	       createListing(2, 1, "MaxMSP", "Tucker Wood", 2022, "Computer", "Heavily Used", 2000);
+	    	       
+	    	       createListing(3, 2, "Hamlet", "Tucker Wood", 2024, "English Language", "Used Like New", 2676);
+	    	       createListing(2, 5, "Romeo and Juliet", "Tucker Wood", 2023, "English Language", "Used Like New", 3276);
+	    	       createListing(1, 1, "Othello", "Tucker Wood", 2017, "English Language", "Used Like New", 2999);
+	    	       createListing(1, 3, "Macbeth", "Tucker Wood", 2024, "English Language", "Moderately Used", 3000);
+	    	       createListing(2, 2, "Midsummer Nights Dream", "Tucker Wood", 2021, "English Language", "Moderately Used", 5999);
+	    	       createListing(6, 5, "King Lear", "Tucker Wood", 2005, "English Language", "Heavily Used", 2347);
+	    	       createListing(1, 1, "Julius Caesar", "Tucker Wood", 2022, "English Language", "Heavily Used", 2000);
+	    	       
+	    	       createListing(2, 2, "Algebra", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
+	    	       createListing(2, 5, "Geometry", "Tucker Wood", 2023, "Math", "Used Like New", 3276);
+	    	       createListing(2, 1, "Trig", "Tucker Wood", 2017, "Math", "Used Like New", 2999);
+	    	       createListing(3, 3, "Calculus 3", "Tucker Wood", 2024, "Math", "Moderately Used", 3000);
+	    	       createListing(1, 2, "Algebra", "Tucker Wood", 2021, "Math", "Moderately Used", 5999);
+	    	       createListing(2, 5, "Discrete", "Tucker Wood", 2005, "Math", "Heavily Used", 2347);
+	    	       createListing(4, 1, "Calculus", "Tucker Wood", 2022, "Math", "Heavily Used", 2000);
+	    	       
+	    	       createListing(1, 2, "Biology", "Tucker Wood", 2024, "Natural Science", "Used Like New", 2676);
+	    	       createListing(3, 5, "Geology", "Tucker Wood", 2023, "Natural Science", "Used Like New", 3276);
+	    	       createListing(2, 1, "Chem 1", "Tucker Wood", 2017, "Natural Science", "Used Like New", 2999);
+	    	       createListing(5, 3, "Chem 2", "Tucker Wood", 2024, "Natural Science", "Moderately Used", 3000);
+	    	       createListing(1, 2, "Glaceology", "Tucker Wood", 2021, "Natural Science", "Moderately Used", 5999);
+	    	       createListing(2, 5, "Botany", "Tucker Wood", 2005, "Natural Science", "Heavily Used", 2347);
+	    	       createListing(2, 1, "Marine Biology", "Tucker Wood", 2022, "Natural Science", "Heavily Used", 2000);
+	    	       
+	    	       createListing(4, 2, "History of Underwater Basket Weaving", "Tucker Wood", 2024, "Other", "Used Like New", 2676);
+	    	       createListing(2, 5, "Politics of the American Southwest", "Tucker Wood", 2023, "Other", "Used Like New", 3276);
+	    	       createListing(2, 1, "Understanding Wood", "Tucker Wood", 2017, "Other", "Used Like New", 2999);
+	    	       createListing(4, 3, "Architectural Daylighting", "Tucker Wood", 2024, "Other", "Moderately Used", 3000);
+	    	       createListing(2, 2, "The Odyssey", "Tucker Wood", 2021, "Other", "Moderately Used", 5999);
+	    	       createListing(2, 5, "The Illiad", "Tucker Wood", 2005, "Other", "Heavily Used", 2347);
+	    	       createListing(1, 1, "On Tyranny", "Tucker Wood", 2022, "Other", "Heavily Used", 2000);
 	    	   } else {
 	    		   status = "Standard";
 	    	   }
@@ -394,51 +418,240 @@ public class DBMediator {
 	}
 	
 	//generic function to return all entries in table WHERE column = searchTerm
-		public static ArrayList<Object> queryCurrentListings(String column, String searchTerm) {
-			ArrayList<Object> results = new ArrayList<>();
-			c = null;
-		    try {
-		       Class.forName("org.sqlite.JDBC");
-		       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
-		       Statement stmt = c.createStatement();
+	public static ArrayList<Object> queryCurrentListings(String column, String searchTerm) {
+		ArrayList<Object> results = new ArrayList<>();
+		Connection c = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+			stmt = c.createStatement();
 	
-		       //String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND books." + column + "='" + searchTerm + "'";
-		       String sql = "SELECT currentlistings.* FROM currentlistings, books";// WHERE " + table + ".bookid = books.bookid";
-		       System.out.println(sql);
-		       ResultSet rs = stmt.executeQuery(sql);
-		       while ( rs.next() ) {
-		    	    System.out.println("checking listing entry");
-		    	    System.out.println("entering currentListing");
+			// Modified query to properly join tables and get book information
+			String sql = "SELECT cl.*, b.* FROM currentListings cl " +
+						"INNER JOIN books b ON cl.bookid = b.bookid ";
+			
+			if (column != null && searchTerm != null) {
+				sql += "WHERE cl." + column + " = '" + searchTerm + "'";
+			}
+			
+			System.out.println("Executing query: " + sql);
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next()) {
+				// Create and populate Listing object
+				Listing thisListing = new Listing();
+				thisListing.setListingID(rs.getInt("listingid"));
+				thisListing.setSellerID(rs.getInt("sellerid"));
+				thisListing.setBookID(rs.getInt("bookid"));
+				thisListing.setQuantity(rs.getInt("quantity"));
+				
+				// Create and populate Book object
+				Book thisBook = new Book();
+				thisBook.setBookID(rs.getInt("bookid"));
+				thisBook.setTitle(rs.getString("title"));
+				thisBook.setAuthor(rs.getString("author"));
+				thisBook.setYear(rs.getInt("pubyear"));
+				thisBook.setValue(rs.getInt("value"));
+				thisBook.setCategory(rs.getString("category"));
+				thisBook.setCondition(rs.getString("condition"));
+				
+				System.out.println("Found listing: " + thisListing.getListingID() + 
+								 " for book: " + thisBook.getTitle());
+				
+				results.add(thisListing);
+				results.add(thisBook);
+			}
+			
+			return results;
+			
+		} catch (Exception e) {
+			System.out.println("Error in queryCurrentListings:");
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+				if (c != null) c.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public static ArrayList<Object> getProfileListings(int userId) {
+		ArrayList<Object> results = new ArrayList<>();
+		Connection c = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	        Class.forName("org.sqlite.JDBC");
+	        c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+	        stmt = c.createStatement();
+	
+	        // Query with explicitly named columns
+	        String sql = "SELECT " +
+	                    "cl.listingid, " +
+	                    "cl.sellerid, " +
+	                    "cl.quantity, " +
+	                    "b.bookid, " +
+	                    "b.title, " +
+	                    "b.author, " +
+	                    "b.pubyear, " +
+	                    "b.category, " +
+	                    "b.condition, " +
+	                    "b.value " +
+	                    "FROM currentListings cl " +
+	                    "INNER JOIN books b ON cl.bookid = b.bookid " +
+	                    "WHERE cl.sellerid = " + userId;
+	        
+	        System.out.println("Executing profile listings query: " + sql);
+	        rs = stmt.executeQuery(sql);
+	        
+	        while (rs.next()) {
+	            try {
+	                Listing thisListing = new Listing();
+	                thisListing.setListingID(rs.getInt("listingid"));
+	                thisListing.setSellerID(rs.getInt("sellerid"));
+	                thisListing.setBookID(rs.getInt("bookid"));
+	                thisListing.setQuantity(rs.getInt("quantity"));
+	                
+	                Book thisBook = new Book();
+	                thisBook.setBookID(rs.getInt("bookid"));
+	                thisBook.setTitle(rs.getString("title"));
+	                thisBook.setAuthor(rs.getString("author"));
+	                thisBook.setYear(rs.getInt("pubyear"));
+	                thisBook.setValue(rs.getInt("value"));
+	                thisBook.setCategory(rs.getString("category"));
+	                thisBook.setCondition(rs.getString("condition"));
+	                
+	                System.out.println("Found: " + thisBook.getTitle() + " - Quantity: " + thisListing.getQuantity());
+	                
+	                results.add(thisListing);
+	                results.add(thisBook);
+	            } catch (Exception e) {
+	                System.out.println("Error processing row: " + e.getMessage());
+	                e.printStackTrace();
+	            }
+	        }
+	        
+	        return results;
+	        
+	    } catch (Exception e) {
+	        System.out.println("Database error: " + e.getMessage());
+	        e.printStackTrace();
+	        return null;
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	            if (c != null) c.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+	
+	
+	//query function to return user's listing history
+	public static ArrayList<Object> queryListingsForUser(String table, String idtype, int userid) {
+		ArrayList<Object> results = new ArrayList<>();
+		c = null;
+	    try {
+	       Class.forName("org.sqlite.JDBC");
+	       c = DriverManager.getConnection("jdbc:sqlite:src/DB/bookstore.db");
+	       Statement stmt = c.createStatement();
+	       	       
+	       String sql = "SELECT " + table + ".* FROM " + table + ", books WHERE " + table + ".bookid = books.bookid AND " + table + "." + idtype + " = '" + userid + "'";
+	       //String sql = "SELECT " + table + ".* FROM " + table + ", books";// WHERE " + table + ".bookid = books.bookid";
+	       System.out.println(sql);
+	       
+	       ResultSet rs3 = stmt.executeQuery(sql);
+	       while(rs3.next()) {
+				System.out.println("listing found ool");
+	       }
+	       rs3.close();
+	       stmt.close();
+	       
+	       stmt = c.createStatement();
+	       ResultSet rs = stmt.executeQuery(sql);
+	       while ( rs.next() ) {
+	    	  System.out.println("listing found il");	    	   
+	          switch (table) {
+				case "currentlistings":
 					Listing thisListing = new Listing();
 					thisListing.setListingID(rs.getInt("listingid"));
 					thisListing.setSellerID(rs.getInt("sellerid"));
 					thisListing.setBookID(rs.getInt("bookid"));
 					thisListing.setQuantity(rs.getInt("quantity"));
 					results.add(thisListing);
-					System.out.println("passed listing");
-					ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + thisListing.getBookID() + "'");
-					Book thisBook = new Book();
-					thisBook.setTitle(rs2.getString("title"));
-					thisBook.setAuthor(rs2.getString("author"));
-					thisBook.setYear(rs2.getInt("pubyear"));
-					thisBook.setValue(rs.getInt("value"));
-					thisBook.setCategory(rs.getString("category"));
-					thisBook.setCondition(rs.getString("condition"));
-					results.add(thisBook);
-					rs2.close();
-		       }
-		       rs.close();
-		       stmt.close();
-		       c.close();
-		       System.out.println(results.size());
-		       return results;
-		    } catch ( Exception e ) {
-		       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-		       System.exit(0);
-		    }
-		    System.out.println("Improper escape from queryColumn");
-			return null;
-		}
+					break;
+				case "executedlistings":
+					System.out.println("entering executedListing");
+					ExecutedSale thisSale = new ExecutedSale();
+					thisSale.setListingID(rs.getInt("listingid"));
+					thisSale.setSellerID(rs.getInt("sellerid"));
+					thisSale.setBookID(rs.getInt("bookid"));
+					thisSale.setQuantity(rs.getInt("quantity"));
+					thisSale.setBuyerID(rs.getInt("buyerid"));
+					thisSale.setSalePrice(rs.getInt("saleprice"));
+					results.add(thisSale);
+					break;
+				default:
+					System.out.println("Invalid Column Query");
+					return null;
+	    	  }
+	       }
+	       rs.close();
+	       
+	       //find and interleave books with associated listings (separated because only one query can run/be accessed at a time)
+	       int size = results.size();
+	       for (int i = 0; i < size; i++) {
+	    	   Book thisBook = new Book();
+	    	   switch (table) {
+	    	   		case "currentlistings":
+	    	   			ResultSet rs2 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + ((Listing) results.get(2 * i)).getBookID() + "'");
+	    	   			thisBook.setTitle(rs2.getString("title"));
+	    	   			thisBook.setAuthor(rs2.getString("author"));
+	    	   			thisBook.setYear(rs2.getInt("pubyear"));
+	    	   			thisBook.setValue(rs2.getInt("value"));
+	    	   			thisBook.setCategory(rs2.getString("category"));
+	    	   			thisBook.setCondition(rs2.getString("condition"));
+	    	   			results.add(2 * i + 1, thisBook);
+	    	   			rs2.close();
+	        	  		break;
+	        	  	case "executedlistings":
+	        	  		ResultSet rs4 = stmt.executeQuery("SELECT * FROM books WHERE bookid = '" + ((Listing) results.get(2 * i)).getBookID() + "'");
+	    	   			thisBook.setTitle(rs4.getString("title"));
+	    	   			thisBook.setAuthor(rs4.getString("author"));
+	    	   			thisBook.setYear(rs4.getInt("pubyear"));
+	    	   			thisBook.setValue(rs4.getInt("value"));
+	    	   			thisBook.setCategory(rs4.getString("category"));
+	    	   			thisBook.setCondition(rs4.getString("condition"));
+	    	   			results.add(2 * i + 1, thisBook);
+	    	   			rs4.close();
+	        	  		break;
+	        	  	default:
+						System.out.println("Invalid Column Query");
+						return null;
+	    	   }
+	       }
+
+	       c.close();
+	       System.out.println(results.size());
+	       return results;
+	    } catch ( Exception e ) {
+	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	       System.exit(0);
+	    }
+	    System.out.println("Improper escape from queryColumn");
+		return null;
+	}
 }
 
 /*
