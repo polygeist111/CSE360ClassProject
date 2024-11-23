@@ -26,6 +26,7 @@ public class CartScreen extends Screen {
 	private ListView<GridPane> cartListings;
 	private GridPane selectedListing;
 	private Label total;
+	private Label tax;
 	private double taxModifier = 1.07;
 
 	
@@ -58,9 +59,24 @@ public class CartScreen extends Screen {
 		populateCart();
 		cartGrid.add(cartListings, 0, 1);
 		
-		total = new Label("Total: ");
+		tax = new Label("Tax: ");
+		HBox taxBox = new HBox(createSpacer());
+		taxBox.getChildren().add(tax);
+		cartGrid.add(taxBox, 0, 2);
 		
-		cartGrid.add(total, 0, 2);
+		total = new Label("Total: ");
+		HBox totalBox = new HBox(createSpacer());
+		totalBox.getChildren().add(total);
+		cartGrid.add(totalBox, 0, 3);
+		
+		double totalPrice = 0;
+        for (int i = 1; i < cartListings.getItems().size(); i++) {
+        	//System.out.println(totalPrice);
+        	//totalPrice += Double.parseDouble(t1.substring(1));
+        	totalPrice += Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
+   		}
+        tax.setText(String.format("Tax: $%.2f", totalPrice * taxModifier - totalPrice));
+        total.setText(String.format("Grand Total: $%.2f", totalPrice * taxModifier));
 		
 		content.add(cartGrid, 0, 0);
 		// Cart view end
@@ -84,22 +100,21 @@ public class CartScreen extends Screen {
 			cartListings.getItems().remove(selectedListing);
 			Platform.runLater(() -> cartListings.getSelectionModel().clearSelection() );
 			selectedListing = null;
+			double totalPrice = 0;
+	        for (int i = 1; i < cartListings.getItems().size(); i++) {
+	        	//System.out.println(totalPrice);
+	        	//totalPrice += Double.parseDouble(t1.substring(1));
+	        	totalPrice += Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
+	   		}
+	        tax.setText(String.format("Tax: $%.2f", totalPrice * taxModifier - totalPrice));
+	        total.setText(String.format("Grand Total: $%.2f", totalPrice * taxModifier));
 			//removeFromCart.setDisable(true);
 		});
 		footer.getChildren().add(removeFromCart);
 		
 		clearCart = new Button("Clear Cart");
 		clearCart.setOnAction(event -> {
-			System.out.println("clearing cart");
-			cartContents.clear();
-			selectedListing = null;
-			int listingCount =  cartListings.getItems().size();
-			for (int i = 1; i < listingCount; i++) {
-				cartListings.getItems().remove(1);				
-			}
-			//clearCart.setDisable(true);
-			removeFromCart.setDisable(true);
-			
+			clearCart();
 		});
 		footer.getChildren().add(clearCart);
 		
@@ -117,6 +132,7 @@ public class CartScreen extends Screen {
 				int cents = baseValue.intValue();
 				DBMediator.executeListing(listingID, ViewController.currentUser.getUserID(), quantity, cents);				
 			}
+			clearCart();
 		});
 		footer.getChildren().add(checkoutButton);
 		
@@ -150,21 +166,21 @@ public class CartScreen extends Screen {
 		//special selection handling
 		cartListings = createCartColumn(cartContents);
 		
-		int listingCount = cartListings.getItems().size();
 		//update total price
-        for (int i = 1; i < listingCount; i++) {
+        for (int i = 1; i < cartListings.getItems().size(); i++) {
         	Label rowPrice = ((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1));
         	rowPrice.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> ov, String t, String t1) {
                     //System.out.println("Label Text Changed");
                     double totalPrice = 0;
-                    for (int i = 1; i < listingCount; i++) {
+                    for (int i = 1; i < cartListings.getItems().size(); i++) {
                     	//System.out.println(totalPrice);
                     	//totalPrice += Double.parseDouble(t1.substring(1));
                     	totalPrice += Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
                		}
-                    total.setText(String.format("$%.2f", totalPrice));
+                    tax.setText(String.format("Tax: $%.2f", totalPrice * taxModifier - totalPrice));
+                    total.setText(String.format("Grand Total: $%.2f", totalPrice * taxModifier));
                 }
             }); 
    		}
@@ -216,6 +232,18 @@ public class CartScreen extends Screen {
 		);
 	}
 	
+	//clears cart (Called on button and checkout finish)
+	protected void clearCart() {
+		System.out.println("clearing cart");
+		cartContents.clear();
+		selectedListing = null;
+		int listingCount =  cartListings.getItems().size();
+		for (int i = 1; i < listingCount; i++) {
+			cartListings.getItems().remove(1);				
+		}
+		//clearCart.setDisable(true);
+		removeFromCart.setDisable(true);
+		tax.setText(String.format("Tax: $%.2f", 0.0));
+        total.setText(String.format("Grand Total: $%.2f", 0.0));
+	}
 }
-//include tax
-//solve error with label updates after list remove
