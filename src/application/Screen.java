@@ -23,7 +23,10 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.converter.NumberStringConverter;
+
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public abstract class Screen {
@@ -323,14 +326,12 @@ public abstract class Screen {
 	}
 	
 	// Create cart ListView column
-	protected ListView<GridPane> createCartColumn(double percentTax, Map<Integer, HBox> cartMap) {
+	protected ListView<GridPane> createCartColumn(Map<Integer, HBox> cartMap) {
 		ObservableList<GridPane> resultItems = FXCollections.observableArrayList();
 		ListView<GridPane> result = new ListView<GridPane>();
 		result.setItems(resultItems);
 		result.setPrefWidth(800);
-		
-		double taxModifier = 1.0 + percentTax / 100.0;
-		
+				
 		GridPane header = new GridPane();
 		//header.setGridLinesVisible(true);
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -390,7 +391,9 @@ public abstract class Screen {
 			column5.setPercentWidth(20);
 			bookRow.getColumnConstraints().addAll(column1, column2, column3, column4, column5);
 			
-			Label bookTitle = new Label(((Label) listing.getChildren().get(0)).getText());
+			int quantity = Integer.parseInt(((Label) listing.getChildren().get(2)).getText());
+			
+			Label bookTitle = new Label(((Label) listing.getChildren().get(0)).getText() + " (" + quantity + " available)");
 			bookRow.add(bookTitle, 0, 0, 2, 1);
 			
 			Label hiddenID = new Label("" + listingID);
@@ -406,22 +409,61 @@ public abstract class Screen {
 			bookPPUBox.getChildren().add(bookPPUCol);
 			bookPPUBox.getChildren().add(createSpacer());
 			bookRow.add(bookPPUBox, 2, 0);
-			
+			/*
 			HBox bookQuantityBox = new HBox(createSpacer());
 			int quantity = Integer.parseInt(((Label) listing.getChildren().get(2)).getText());
-			Label bookQuantityCol = new Label("" + quantity);
+			Label bookQuantityCol = new Label("1");
 			bookQuantityCol.setTextAlignment(TextAlignment.CENTER);
+			bookQuantityBox.getChildren().add(bookQuantityCol);
+			bookQuantityBox.getChildren().add(createSpacer());
+			bookRow.add(bookQuantityBox, 3, 0);
+			*/
+			
+			HBox bookQuantityBox = new HBox(createSpacer());
+			//Label bookQuantityCol = new Label("1");
+			//bookQuantityCol.setTextAlignment(TextAlignment.CENTER);
+			TextField bookQuantityCol = new TextField();
+			bookQuantityCol.setText("1");			
+			//modified from https://stackoverflow.com/questions/56446127/javafx-textfield-with-regex-for-zipcode
+			String quantityRegEx = "^$|[1-" + quantity + "]";
+			final Pattern pattern = Pattern.compile(quantityRegEx);
+			TextFormatter<?> formatter = new TextFormatter<>(change -> {
+			    if (pattern.matcher(change.getControlNewText()).matches()) {
+			        return change; // allow this change to happen
+			    } else {
+			        return null; // prevent change
+			    }
+			});
+			bookQuantityCol.focusedProperty().addListener((ov, oldV, newV) -> {
+		       if (!newV) {
+		          if (bookQuantityCol.getText().isEmpty()) {
+		        	  bookQuantityCol.setText("1");
+		          }
+		          Label listingTotal = ((Label) ((HBox) bookRow.getChildren().get(4)).getChildren().get(1));
+		          double quantitySelected = Double.parseDouble(((TextField) ((HBox) bookRow.getChildren().get(3)).getChildren().get(1)).getText());
+		          double unitPrice = Double.parseDouble(((Label) ((HBox) bookRow.getChildren().get(2)).getChildren().get(1)).getText().substring(1)); //substring chops off $ sign
+		          listingTotal.setText(String.format("$%.2f", (quantitySelected * unitPrice)));
+		          //total list price                                  //quantity selected                              //unit price                                                                                         //cents to dollars
+		          //((Label) bookRow.getChildren().get(4)).setText("" + (Double.parseDouble(bookQuantityCol.getText()) * Double.parseDouble(((Label) ((HBox) bookRow.getChildren().get(2)).getChildren().get(1)).getText()) / 100.0));
+		       }
+		    });
+			bookQuantityCol.setTextFormatter(formatter);
+			
 			bookQuantityBox.getChildren().add(bookQuantityCol);
 			bookQuantityBox.getChildren().add(createSpacer());
 			bookRow.add(bookQuantityBox, 3, 0);
 			
 			HBox bookPriceBox = new HBox(createSpacer());
-			double doublePrice = ppu * quantity;
-			Label bookPriceCol = new Label(String.format("$%.2f", doublePrice));
+			//double doublePrice = ppu * Integer.parseInt(bookQuantityCol.getText());
+			Label bookPriceCol = new Label(String.format("$%.2f", ppu));
 			bookPriceCol.setTextAlignment(TextAlignment.CENTER);
 			bookPriceBox.getChildren().add(bookPriceCol);
 			bookPriceBox.getChildren().add(createSpacer());
 			bookRow.add(bookPriceBox, 4, 0);
+			
+			Label maxQuantity = new Label("" + quantity);
+			maxQuantity.setManaged(false);
+			bookRow.add(maxQuantity, 5, 0);
 			resultItems.add(bookRow);
 		}
 		
@@ -429,6 +471,7 @@ public abstract class Screen {
 		return result;
 		
 	}
+	
 	
 	protected abstract void assembleHeader();
 	

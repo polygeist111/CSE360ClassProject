@@ -242,28 +242,31 @@ public class DBMediator {
 	       
 	       //get listing from currentListings
 	       ResultSet rs = stmt.executeQuery("SELECT * FROM currentListings WHERE listingid = '" + listingID + "'");
-	       
+	       int queryQuantity = rs.getInt("quantity");
+	       int queryBookID = rs.getInt("bookid");
+	       int querySellerID = rs.getInt("sellerid");
+	       int queryListingID = rs.getInt("listingid");
+	       rs.close();
 	       //if this uses up every copy in listing, delete from currentListing
 	       		//otherwise, decrement currentListing quantity accordingly
-	       if (quantity == rs.getInt("quantity")) {
+	       if (quantity == queryQuantity) {
 	    	   //delete listing from currentListings
 	    	   stmt.executeUpdate("DELETE FROM currentListings WHERE listingid = '" + listingID + "'");	    	   
-	       } else  if (quantity <= rs.getInt("quantity")){
+	       } else  if (quantity <= queryQuantity){
 	    	   //decrement listing quantity by proper amount
-	    	   stmt.executeUpdate("UPDATE currentListings SET quantity = " + (rs.getInt("quantity") - quantity) + " WHERE listingid = " + rs.getInt("listingid"));
+	    	   stmt.executeUpdate("UPDATE currentListings SET quantity = " + (queryQuantity - quantity) + " WHERE listingid = " + queryListingID);
 	       } else {
 	    	   //CODE: add handling for a change in quantity
 	       }
-	       
+	       //System.out.println("made it this far");
 	       //create executedListing
-	    	   String sql = "INSERT INTO executedListings (sellerid, buyerid, bookid, quantity, saleprice)" +
-	    			   "VALUES (" + rs.getInt("sellerid") + ", " + buyerID + ", " + rs.getInt("bookid") + ", " + quantity + ", " + salePrice + ")";
-	    	   stmt.executeUpdate(sql);
+	       String sql = "INSERT INTO executedListings (sellerid, buyerid, bookid, quantity, saleprice)" +
+	    			 "VALUES (" + querySellerID + ", " + buyerID + ", " + queryBookID + ", " + quantity + ", " + salePrice + ")";
+	       stmt.executeUpdate(sql);
 	    	   
-	    	   stmt.close();
-	    	   rs.close();
-	    	   c.close();
-	    	   return 1;
+	       stmt.close();
+	       c.close();
+	       return 1;
 	       
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );

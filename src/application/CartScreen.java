@@ -25,6 +25,9 @@ public class CartScreen extends Screen {
 		//see BuyerScreen for complete ListView implementation
 	private ListView<GridPane> cartListings;
 	private GridPane selectedListing;
+	private Label total;
+	private double taxModifier = 1.07;
+
 	
 	CartScreen (Map<Integer, HBox> cartList) {
 		cartContents = cartList;
@@ -55,7 +58,8 @@ public class CartScreen extends Screen {
 		populateCart();
 		cartGrid.add(cartListings, 0, 1);
 		
-		Label total = new Label("Total: ");
+		total = new Label("Total: ");
+		
 		cartGrid.add(total, 0, 2);
 		
 		content.add(cartGrid, 0, 0);
@@ -99,14 +103,32 @@ public class CartScreen extends Screen {
 		});
 		footer.getChildren().add(clearCart);
 		
-		Button cartButton = new Button("Return to Shopping");
-		cartButton.setOnAction(event -> {
+		Button checkoutButton = new Button("Check Out");
+		checkoutButton.setOnAction(event -> {
+			for (Map.Entry<Integer, HBox> entry : cartContents.entrySet()) {
+			}
+			int listingCount =  cartListings.getItems().size();
+			for (int i = 1; i < listingCount; i++) {
+				int listingID = Integer.parseInt(((Label) ((GridPane) cartListings.getItems().get(i)).getChildren().get(1)).getText());
+				int quantity =	Integer.parseInt(((TextField) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(3)).getChildren().get(1)).getText());
+				Double baseValue =	Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
+				baseValue *= 100;
+				baseValue *= taxModifier;
+				int cents = baseValue.intValue();
+				DBMediator.executeListing(listingID, ViewController.currentUser.getUserID(), quantity, cents);				
+			}
+		});
+		footer.getChildren().add(checkoutButton);
+		
+		footer.getChildren().add(createSpacer());
+		Button shoppingButton = new Button("Return to Shopping");
+		shoppingButton.setOnAction(event -> {
 			cartContents.forEach((key, value) -> {
 				System.out.println("ListingID: " + key + " Title: " + ((Label) value.getChildren().get(0)).getText());
 			});
 			returnShopping(cartContents);
 		});
-		footer.getChildren().add(cartButton);
+		footer.getChildren().add(shoppingButton);
 		
 		
 		//root.add(footer, 0, 2);
@@ -117,7 +139,7 @@ public class CartScreen extends Screen {
 		creditFrame.setPadding(new Insets(5));
 		creditFrame.setAlignment(Pos.BOTTOM_RIGHT);
 		
-		footer.getChildren().add(createSpacer());
+		//footer.getChildren().add(createSpacer());
 		footer.getChildren().add(creditFrame);
 		
 		root.add(footer, 0, 2);
@@ -126,8 +148,27 @@ public class CartScreen extends Screen {
 	
 	protected void populateCart() {
 		//special selection handling
-		cartListings = createCartColumn(percentTax, cartContents);
-
+		cartListings = createCartColumn(cartContents);
+		
+		int listingCount = cartListings.getItems().size();
+		//update total price
+        for (int i = 1; i < listingCount; i++) {
+        	Label rowPrice = ((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1));
+        	rowPrice.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                    //System.out.println("Label Text Changed");
+                    double totalPrice = 0;
+                    for (int i = 1; i < listingCount; i++) {
+                    	//System.out.println(totalPrice);
+                    	//totalPrice += Double.parseDouble(t1.substring(1));
+                    	totalPrice += Double.parseDouble(((Label) ((HBox) ((GridPane) cartListings.getItems().get(i)).getChildren().get(4)).getChildren().get(1)).getText().substring(1));
+               		}
+                    total.setText(String.format("$%.2f", totalPrice));
+                }
+            }); 
+   		}
+        //handle selection cases
 		cartListings.getSelectionModel().selectedItemProperty().addListener(
 			new ChangeListener<GridPane>() {
 				public void changed(ObservableValue<? extends GridPane> ov, GridPane old_val, GridPane new_val) {
@@ -176,3 +217,5 @@ public class CartScreen extends Screen {
 	}
 	
 }
+//include tax
+//solve error with label updates after list remove
