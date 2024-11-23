@@ -1,5 +1,5 @@
 # Ignoring Eclipse configuration files and build directories
-.classpath
-bin/
-.class
-.project
+#.classpath
+#bin/
+#.class
+#.project
