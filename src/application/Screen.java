@@ -249,6 +249,10 @@ public abstract class Screen {
 			hiddenCondition.setManaged(false);
 			rowEntry.getChildren().add(hiddenCondition);
 			
+			Label hiddenValue = new Label("" + book.getValue());
+			hiddenValue.setManaged(false);
+			rowEntry.getChildren().add(hiddenValue);
+			
 			//optional handling of cart status
 			if (cartMap != null) {
 				ArrayList<Integer> stillPresent = new ArrayList<>();
@@ -319,27 +323,104 @@ public abstract class Screen {
 	}
 	
 	// Create cart ListView column
-	protected ListView<HBox> createCartColumn(ArrayList<Object> booksIn, ArrayList<String> columns, Map<Integer, HBox> cartMap) {
-		ObservableList<HBox> resultItems = FXCollections.observableArrayList();
-		ListView<HBox> result = new ListView<HBox>();
-		result.setPrefWidth(800);
+	protected ListView<GridPane> createCartColumn(double percentTax, Map<Integer, HBox> cartMap) {
+		ObservableList<GridPane> resultItems = FXCollections.observableArrayList();
+		ListView<GridPane> result = new ListView<GridPane>();
 		result.setItems(resultItems);
+		result.setPrefWidth(800);
 		
-		HBox header = new HBox();
+		double taxModifier = 1.0 + percentTax / 100.0;
+		
+		GridPane header = new GridPane();
+		//header.setGridLinesVisible(true);
+		ColumnConstraints col1 = new ColumnConstraints();
+		col1.setPercentWidth(20);
+		ColumnConstraints col2 = new ColumnConstraints();
+		col2.setPercentWidth(20);
+		ColumnConstraints col3 = new ColumnConstraints();
+		col3.setPercentWidth(20);
+		ColumnConstraints col4 = new ColumnConstraints();
+		col4.setPercentWidth(20);
+		ColumnConstraints col5 = new ColumnConstraints();
+		col5.setPercentWidth(20);
+		header.getColumnConstraints().addAll(col1, col2, col3, col4, col5);
+		
 		Label titleCol = new Label("Title");
-		header.getChildren().add(titleCol);
-		header.getChildren().add(createSpacer());
-		header.getChildren().add(new Label(""));
-		header.getChildren().add(createSpacer());
-		header.getChildren().add(new Label(""));
-		for (String child : columns) {
-			header.getChildren().add(createSpacer());
-			header.getChildren().add(new Label(""));
-			Label childCol = new Label(child);
-			childCol.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-			header.getChildren().add(childCol);
-		}
+		header.add(titleCol, 0, 0, 2, 1);
+		header.add(createSpacer(), 1, 0);
+		
+		HBox ppuBox = new HBox(createSpacer());
+		Label ppuCol = new Label("Price per Unit");
+		ppuCol.setTextAlignment(TextAlignment.CENTER);
+		ppuBox.getChildren().add(ppuCol);
+		ppuBox.getChildren().add(createSpacer());
+		header.add(ppuBox, 2, 0);
+		
+		HBox quantityBox = new HBox(createSpacer());
+		Label quantityCol = new Label("Quantity");
+		quantityCol.setTextAlignment(TextAlignment.CENTER);
+		quantityBox.getChildren().add(quantityCol);
+		quantityBox.getChildren().add(createSpacer());
+		header.add(quantityBox, 3, 0);
+		
+		HBox priceBox = new HBox(createSpacer());
+		Label priceCol = new Label("Price");
+		priceCol.setTextAlignment(TextAlignment.CENTER);
+		priceBox.getChildren().add(priceCol);
+		priceBox.getChildren().add(createSpacer());
+		header.add(priceBox, 4, 0);
 		resultItems.add(header);
+		
+		for (Map.Entry<Integer, HBox> entry : cartMap.entrySet()) {
+			//Book book = (Book) cartMap.;
+			int listingID = entry.getKey();
+			HBox listing = entry.getValue();
+			
+			GridPane bookRow = new GridPane();
+			//header.setGridLinesVisible(true);
+			ColumnConstraints column1 = new ColumnConstraints();
+			column1.setPercentWidth(20);
+			ColumnConstraints column2 = new ColumnConstraints();
+			column2.setPercentWidth(20);
+			ColumnConstraints column3 = new ColumnConstraints();
+			column3.setPercentWidth(20);
+			ColumnConstraints column4 = new ColumnConstraints();
+			column4.setPercentWidth(20);
+			ColumnConstraints column5 = new ColumnConstraints();
+			column5.setPercentWidth(20);
+			bookRow.getColumnConstraints().addAll(column1, column2, column3, column4, column5);
+			
+			Label bookTitle = new Label(((Label) listing.getChildren().get(0)).getText());
+			bookRow.add(bookTitle, 0, 0, 2, 1);
+			bookRow.add(createSpacer(), 1, 0);
+			
+			HBox bookPPUBox = new HBox(createSpacer());
+			int price = Integer.parseInt(((Label) listing.getChildren().get(5)).getText());
+			double ppu = (double) price;
+			ppu = ppu / 100.0;
+			Label bookPPUCol = new Label(String.format("$%.2f", ppu));
+			bookPPUCol.setTextAlignment(TextAlignment.CENTER);
+			bookPPUBox.getChildren().add(bookPPUCol);
+			bookPPUBox.getChildren().add(createSpacer());
+			bookRow.add(bookPPUBox, 2, 0);
+			
+			HBox bookQuantityBox = new HBox(createSpacer());
+			int quantity = Integer.parseInt(((Label) listing.getChildren().get(2)).getText());
+			Label bookQuantityCol = new Label("" + quantity);
+			bookQuantityCol.setTextAlignment(TextAlignment.CENTER);
+			bookQuantityBox.getChildren().add(bookQuantityCol);
+			bookQuantityBox.getChildren().add(createSpacer());
+			bookRow.add(bookQuantityBox, 3, 0);
+			
+			HBox bookPriceBox = new HBox(createSpacer());
+			double doublePrice = ppu * quantity;
+			Label bookPriceCol = new Label(String.format("$%.2f", doublePrice));
+			bookPriceCol.setTextAlignment(TextAlignment.CENTER);
+			bookPriceBox.getChildren().add(bookPriceCol);
+			bookPriceBox.getChildren().add(createSpacer());
+			bookRow.add(bookPriceBox, 4, 0);
+			resultItems.add(bookRow);
+		}
 		
 		
 		return result;

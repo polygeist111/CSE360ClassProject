@@ -44,6 +44,7 @@ public class DBMediator {
                    " status           	TEXT    NOT NULL)"; 
 	       stmt.executeUpdate(sql);
 	       createUser("admin", "admin");
+	       createUser("reguser", "reguser");
 	       
 	       //create currentListings table
 	       stmt.executeUpdate("DROP TABLE IF EXISTS currentListings");
