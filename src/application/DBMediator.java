@@ -167,45 +167,45 @@ public class DBMediator {
 	    	   String status = "";
 	    	   if (username == "admin") {
 	    		   status = "Admin";
-	    		   createListing(1, 2, "C", "Tucker Wood", 2024, "Computer", "Used Like New", 2676);
-	    	       createListing(2, 5, "C++", "Tucker Wood", 2023, "Computer", "Used Like New", 3276);
-	    	       createListing(1, 1, "C#", "Tucker Wood", 2017, "Computer", "Used Like New", 2999);
-	    	       createListing(1, 3, "Java", "Tucker Wood", 2024, "Computer", "Moderately Used", 3000);
-	    	       createListing(2, 2, "JavaScript", "Tucker Wood", 2021, "Computer", "Moderately Used", 5999);
-	    	       createListing(1, 5, "Swift", "Tucker Wood", 2005, "Computer", "Heavily Used", 2347);
-	    	       createListing(2, 1, "MaxMSP", "Tucker Wood", 2022, "Computer", "Heavily Used", 2000);
+	    		   createListing(1, 2, "C", "Thalia Wood", 2024, "Computer", "Used Like New", 2676);
+	    	       createListing(2, 5, "C++", "Thalia Wood", 2023, "Computer", "Used Like New", 3276);
+	    	       createListing(1, 1, "C#", "Thalia Wood", 2017, "Computer", "Used Like New", 2999);
+	    	       createListing(1, 3, "Java", "Thalia Wood", 2024, "Computer", "Moderately Used", 3000);
+	    	       createListing(2, 2, "JavaScript", "Thalia Wood", 2021, "Computer", "Moderately Used", 5999);
+	    	       createListing(1, 5, "Swift", "Thalia Wood", 2005, "Computer", "Heavily Used", 2347);
+	    	       createListing(2, 1, "MaxMSP", "Thalia Wood", 2022, "Computer", "Heavily Used", 2000);
 	    	       
-	    	       createListing(3, 2, "Hamlet", "Tucker Wood", 2024, "English Language", "Used Like New", 2676);
-	    	       createListing(2, 5, "Romeo and Juliet", "Tucker Wood", 2023, "English Language", "Used Like New", 3276);
-	    	       createListing(1, 1, "Othello", "Tucker Wood", 2017, "English Language", "Used Like New", 2999);
-	    	       createListing(1, 3, "Macbeth", "Tucker Wood", 2024, "English Language", "Moderately Used", 3000);
-	    	       createListing(2, 2, "Midsummer Nights Dream", "Tucker Wood", 2021, "English Language", "Moderately Used", 5999);
-	    	       createListing(6, 5, "King Lear", "Tucker Wood", 2005, "English Language", "Heavily Used", 2347);
-	    	       createListing(1, 1, "Julius Caesar", "Tucker Wood", 2022, "English Language", "Heavily Used", 2000);
+	    	       createListing(3, 2, "Hamlet", "Thalia Wood", 2024, "English Language", "Used Like New", 2676);
+	    	       createListing(2, 5, "Romeo and Juliet", "Thalia Wood", 2023, "English Language", "Used Like New", 3276);
+	    	       createListing(1, 1, "Othello", "Thalia Wood", 2017, "English Language", "Used Like New", 2999);
+	    	       createListing(1, 3, "Macbeth", "Thalia Wood", 2024, "English Language", "Moderately Used", 3000);
+	    	       createListing(2, 2, "Midsummer Nights Dream", "Thalia Wood", 2021, "English Language", "Moderately Used", 5999);
+	    	       createListing(6, 5, "King Lear", "Thalia Wood", 2005, "English Language", "Heavily Used", 2347);
+	    	       createListing(1, 1, "Julius Caesar", "Thalia Wood", 2022, "English Language", "Heavily Used", 2000);
 	    	       
-	    	       createListing(2, 2, "Algebra", "Tucker Wood", 2024, "Math", "Used Like New", 2676);
-	    	       createListing(2, 5, "Geometry", "Tucker Wood", 2023, "Math", "Used Like New", 3276);
-	    	       createListing(2, 1, "Trig", "Tucker Wood", 2017, "Math", "Used Like New", 2999);
-	    	       createListing(3, 3, "Calculus 3", "Tucker Wood", 2024, "Math", "Moderately Used", 3000);
-	    	       createListing(1, 2, "Algebra", "Tucker Wood", 2021, "Math", "Moderately Used", 5999);
-	    	       createListing(2, 5, "Discrete", "Tucker Wood", 2005, "Math", "Heavily Used", 2347);
-	    	       createListing(4, 1, "Calculus", "Tucker Wood", 2022, "Math", "Heavily Used", 2000);
+	    	       createListing(2, 2, "Algebra", "Thalia Wood", 2024, "Math", "Used Like New", 2676);
+	    	       createListing(2, 5, "Geometry", "Thalia Wood", 2023, "Math", "Used Like New", 3276);
+	    	       createListing(2, 1, "Trig", "Thalia Wood", 2017, "Math", "Used Like New", 2999);
+	    	       createListing(3, 3, "Calculus 3", "Thalia Wood", 2024, "Math", "Moderately Used", 3000);
+	    	       createListing(1, 2, "Algebra", "Thalia Wood", 2021, "Math", "Moderately Used", 5999);
+	    	       createListing(2, 5, "Discrete", "Thalia Wood", 2005, "Math", "Heavily Used", 2347);
+	    	       createListing(4, 1, "Calculus", "Thalia Wood", 2022, "Math", "Heavily Used", 2000);
 	    	       
-	    	       createListing(1, 2, "Biology", "Tucker Wood", 2024, "Natural Science", "Used Like New", 2676);
-	    	       createListing(3, 5, "Geology", "Tucker Wood", 2023, "Natural Science", "Used Like New", 3276);
-	    	       createListing(2, 1, "Chem 1", "Tucker Wood", 2017, "Natural Science", "Used Like New", 2999);
-	    	       createListing(5, 3, "Chem 2", "Tucker Wood", 2024, "Natural Science", "Moderately Used", 3000);
-	    	       createListing(1, 2, "Glaceology", "Tucker Wood", 2021, "Natural Science", "Moderately Used", 5999);
-	    	       createListing(2, 5, "Botany", "Tucker Wood", 2005, "Natural Science", "Heavily Used", 2347);
-	    	       createListing(2, 1, "Marine Biology", "Tucker Wood", 2022, "Natural Science", "Heavily Used", 2000);
+	    	       createListing(1, 2, "Biology", "Thalia Wood", 2024, "Natural Science", "Used Like New", 2676);
+	    	       createListing(3, 5, "Geology", "Thalia Wood", 2023, "Natural Science", "Used Like New", 3276);
+	    	       createListing(2, 1, "Chem 1", "Thalia Wood", 2017, "Natural Science", "Used Like New", 2999);
+	    	       createListing(5, 3, "Chem 2", "Thalia Wood", 2024, "Natural Science", "Moderately Used", 3000);
+	    	       createListing(1, 2, "Glaceology", "Thalia Wood", 2021, "Natural Science", "Moderately Used", 5999);
+	    	       createListing(2, 5, "Botany", "Thalia Wood", 2005, "Natural Science", "Heavily Used", 2347);
+	    	       createListing(2, 1, "Marine Biology", "Thalia Wood", 2022, "Natural Science", "Heavily Used", 2000);
 	    	       
-	    	       createListing(4, 2, "History of Underwater Basket Weaving", "Tucker Wood", 2024, "Other", "Used Like New", 2676);
-	    	       createListing(2, 5, "Politics of the American Southwest", "Tucker Wood", 2023, "Other", "Used Like New", 3276);
-	    	       createListing(2, 1, "Understanding Wood", "Tucker Wood", 2017, "Other", "Used Like New", 2999);
-	    	       createListing(4, 3, "Architectural Daylighting", "Tucker Wood", 2024, "Other", "Moderately Used", 3000);
-	    	       createListing(2, 2, "The Odyssey", "Tucker Wood", 2021, "Other", "Moderately Used", 5999);
-	    	       createListing(2, 5, "The Illiad", "Tucker Wood", 2005, "Other", "Heavily Used", 2347);
-	    	       createListing(1, 1, "On Tyranny", "Tucker Wood", 2022, "Other", "Heavily Used", 2000);
+	    	       createListing(4, 2, "History of Underwater Basket Weaving", "Thalia Wood", 2024, "Other", "Used Like New", 2676);
+	    	       createListing(2, 5, "Politics of the American Southwest", "Thalia Wood", 2023, "Other", "Used Like New", 3276);
+	    	       createListing(2, 1, "Understanding Wood", "Thalia Wood", 2017, "Other", "Used Like New", 2999);
+	    	       createListing(4, 3, "Architectural Daylighting", "Thalia Wood", 2024, "Other", "Moderately Used", 3000);
+	    	       createListing(2, 2, "The Odyssey", "Thalia Wood", 2021, "Other", "Moderately Used", 5999);
+	    	       createListing(2, 5, "The Illiad", "Thalia Wood", 2005, "Other", "Heavily Used", 2347);
+	    	       createListing(1, 1, "On Tyranny", "Thalia Wood", 2022, "Other", "Heavily Used", 2000);
 	    	   } else {
 	    		   status = "Standard";
 	    	   }
